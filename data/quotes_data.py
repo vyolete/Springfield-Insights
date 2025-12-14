@@ -1,8 +1,15 @@
 """
 Base de datos de citas auténticas de Los Simpsons
+Sistema híbrido: API real + fallback local
 """
+from services.simpsons_api_service import SimpsonsAPIService
+import random
+import logging
 
-SIMPSONS_QUOTES = [
+logger = logging.getLogger(__name__)
+
+# Fallback local de citas auténticas
+FALLBACK_QUOTES = [
     {
         "quote": "D'oh!",
         "character": "Homer Simpson",
@@ -76,3 +83,45 @@ SIMPSONS_QUOTES = [
         "image": "https://static.wikia.nocookie.net/simpsons/images/7/7f/Mmm.jpg"
     }
 ]
+
+class QuotesManager:
+    """Gestor de citas que combina API real con fallback local"""
+    
+    def __init__(self):
+        self.api_service = SimpsonsAPIService()
+        self.fallback_quotes = FALLBACK_QUOTES
+    
+    def get_random_quote(self):
+        """
+        Obtiene una cita aleatoria, primero de la API, luego fallback local
+        
+        Returns:
+            Dict con cita, personaje, contexto e imagen
+        """
+        # Intentar obtener de la API real primero
+        try:
+            api_quote = self.api_service.get_random_quote_from_api()
+            if api_quote:
+                logger.info("✅ Cita obtenida de API real de Los Simpsons")
+                return api_quote
+        except Exception as e:
+            logger.warning(f"API no disponible: {e}")
+        
+        # Fallback a citas locales
+        logger.info("🔄 Usando citas de fallback local")
+        return random.choice(self.fallback_quotes)
+    
+    def get_api_status(self):
+        """Verifica estado de la API"""
+        return self.api_service.get_api_status()
+
+# Instancia global del gestor de citas
+quotes_manager = QuotesManager()
+
+# Función de compatibilidad para mantener la interfaz existente
+def get_simpsons_quotes():
+    """Retorna todas las citas disponibles (para compatibilidad)"""
+    return FALLBACK_QUOTES
+
+# Variable de compatibilidad
+SIMPSONS_QUOTES = FALLBACK_QUOTES

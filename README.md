@@ -32,7 +32,9 @@ python run.py
 
 ## 🎯 Características
 
-- ✅ **12 citas auténticas** de Los Simpsons
+- ✅ **API real de Los Simpsons** conectada a https://thesimpsonsapi.com
+- ✅ **Frases auténticas** directamente de la base de datos oficial
+- ✅ **Sistema híbrido** API + fallback local para máxima confiabilidad
 - ✅ **Análisis filosófico** generado por GPT-4
 - ✅ **Crítica social** contextualizada
 - ✅ **Interfaz optimizada** y responsive
@@ -47,11 +49,12 @@ springfield_insights/
 ├── config/
 │   └── settings.py           # Configuración
 ├── services/
-│   └── quote_service.py      # Servicio de análisis IA
+│   ├── quote_service.py      # Servicio de análisis IA
+│   └── simpsons_api_service.py # Conexión a API oficial
 ├── ui/
 │   └── components.py         # Componentes de interfaz
 ├── data/
-│   └── quotes_data.py        # Base de datos de citas
+│   └── quotes_data.py        # Gestor híbrido API + fallback local
 ├── requirements.txt          # Dependencias
 └── README.md                 # Documentación
 ```

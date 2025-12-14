@@ -13,7 +13,7 @@ sys.path.append(str(Path(__file__).parent))
 from config.settings import settings
 from services.quote_service import QuoteService
 from ui.components import UIComponents
-from data.quotes_data import SIMPSONS_QUOTES
+from data.quotes_data import quotes_manager, SIMPSONS_QUOTES
 
 class SpringfieldInsightsApp:
     """Aplicación principal de Springfield Insights"""
@@ -80,14 +80,27 @@ class SpringfieldInsightsApp:
                 self._get_new_quote()
     
     def _get_new_quote(self):
-        """Obtiene una nueva cita aleatoria"""
-        import random
-        st.session_state.current_quote_index = random.randint(0, len(SIMPSONS_QUOTES) - 1)
-        st.rerun()
+        """Obtiene una nueva cita aleatoria de la API o fallback"""
+        try:
+            # Obtener cita del gestor híbrido
+            quote_data = quotes_manager.get_random_quote()
+            st.session_state.current_quote_data = quote_data
+            st.session_state.current_quote_index = 0  # Usar como flag
+            st.rerun()
+        except Exception as e:
+            st.error(f"Error obteniendo cita: {e}")
+            # Fallback a sistema anterior
+            import random
+            st.session_state.current_quote_index = random.randint(0, len(SIMPSONS_QUOTES) - 1)
+            st.rerun()
     
     def _render_quote_section(self):
         """Renderiza la sección de la cita actual"""
-        quote_data = SIMPSONS_QUOTES[st.session_state.current_quote_index]
+        # Usar datos de la API si están disponibles, sino fallback local
+        if hasattr(st.session_state, 'current_quote_data') and st.session_state.current_quote_data:
+            quote_data = st.session_state.current_quote_data
+        else:
+            quote_data = SIMPSONS_QUOTES[st.session_state.current_quote_index]
         
         # Layout principal
         col_img, col_content = st.columns([1, 2])
@@ -159,7 +172,18 @@ class SpringfieldInsightsApp:
         """Renderiza la barra lateral"""
         with st.sidebar:
             st.markdown("### 📊 Estadísticas")
-            st.metric("Frases disponibles", len(SIMPSONS_QUOTES))
+            
+            # Verificar estado de la API
+            api_status = quotes_manager.get_api_status()
+            
+            if api_status.get('available'):
+                st.metric("Fuente de datos", "API Real + Local")
+                st.success("🌐 API de Simpsons conectada")
+            else:
+                st.metric("Fuente de datos", "Local (Fallback)")
+                st.warning("⚠️ API no disponible, usando fallback")
+            
+            st.metric("Frases locales", len(SIMPSONS_QUOTES))
             
             if 'analyses_generated' not in st.session_state:
                 st.session_state.analyses_generated = 0
@@ -170,14 +194,20 @@ class SpringfieldInsightsApp:
             **Springfield Insights** combina el humor inteligente de Los Simpsons 
             con análisis filosófico académico usando GPT-4.
             
-            - **Frases auténticas** de la serie
-            - **Análisis profundo** con IA
+            - **Frases auténticas** de la API oficial
+            - **Análisis profundo** con GPT-4
             - **Crítica social** contextualizada
-            - **Interfaz optimizada**
+            - **Sistema híbrido** API + fallback local
             """)
             
-            st.markdown("### ⚙️ Estado")
+            st.markdown("### ⚙️ Estado del Sistema")
             st.success("✅ GPT-4 configurado")
+            
+            if api_status.get('available'):
+                st.success("✅ API de Simpsons conectada")
+            else:
+                st.info("🔄 Modo fallback local")
+            
             st.info("🚀 Sistema operativo")
 
 def main():
