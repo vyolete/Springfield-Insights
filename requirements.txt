@@ -1,7 +1,13 @@
+# Springfield Insights - Dependencias Core
+
+# Framework de interfaz web
 streamlit>=1.28.0
+
+# Cliente OpenAI para GPT-4
 openai>=1.0.0
+
+# HTTP requests para API externa
 requests>=2.31.0
+
+# Gestión de variables de entorno
 python-dotenv>=1.0.0
-matplotlib>=3.7.0
-plotly>=5.15.0
-pandas>=2.0.0
