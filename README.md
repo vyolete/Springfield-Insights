@@ -67,6 +67,28 @@ springfield_insights/
 
 ### Instalación
 
+#### Opción 1: Setup Automatizado (Recomendado)
+
+1. **Clonar el repositorio**
+   ```bash
+   git clone <repository-url>
+   cd springfield_insights
+   ```
+
+2. **Ejecutar setup automatizado**
+   ```bash
+   python setup.py
+   ```
+   
+   El script automáticamente:
+   - Verifica la versión de Python
+   - Crea directorios necesarios
+   - Instala dependencias
+   - Configura archivos de entorno
+   - Ejecuta tests básicos
+
+#### Opción 2: Instalación Manual
+
 1. **Clonar el repositorio**
    ```bash
    git clone <repository-url>
@@ -91,9 +113,10 @@ springfield_insights/
    OPENAI_API_KEY=tu-clave-api-de-openai
    ```
    
-   O configurar como variable de entorno del sistema:
+   O usar el archivo de ejemplo:
    ```bash
-   export OPENAI_API_KEY="tu-clave-api-de-openai"
+   cp .env.example .env
+   # Editar .env con tu API key
    ```
 
 ### Ejecución
@@ -153,22 +176,24 @@ El sistema utiliza prompting estructurado que incluye:
 
 ### Funcionalidades Principales
 
-- ✅ Obtención de citas aleatorias de Los Simpsons
-- ✅ Generación de análisis filosófico con GPT-4
-- ✅ Interfaz visual temática
-- ✅ Manejo robusto de errores
-- ✅ Validación de datos
-- ✅ Sistema de favoritos
-- ✅ Estadísticas de sesión
+- ✅ **Exploración de Citas**: Obtención de citas aleatorias con análisis filosófico GPT-4
+- ✅ **Sistema de Favoritos Avanzado**: Persistencia local, filtros y exportación
+- ✅ **Analytics Inteligentes**: Análisis de patrones, complejidad y temas filosóficos
+- ✅ **Interfaz Multi-pestaña**: Navegación intuitiva entre funcionalidades
+- ✅ **Gestión de Datos**: Almacenamiento local con formato JSON estructurado
+- ✅ **Exportación**: Descarga de favoritos en formato JSON
+- ✅ **Métricas Avanzadas**: Análisis de complejidad lingüística y profundidad conceptual
 
-### Características Técnicas
+### Características Técnicas Avanzadas
 
-- ✅ Arquitectura modular y escalable
-- ✅ Logging centralizado
-- ✅ Configuración mediante variables de entorno
-- ✅ Validación de entrada y salida
-- ✅ Manejo de timeouts y reintentos
-- ✅ Interfaz responsive
+- ✅ **Arquitectura Modular Expandida**: 7 módulos especializados
+- ✅ **Sistema de Analytics**: Análisis automático de patrones y tendencias
+- ✅ **Persistencia de Datos**: Gestión local de favoritos con FavoritesManager
+- ✅ **Logging Avanzado**: Sistema de logs configurable con rotación
+- ✅ **Tests Unitarios**: Cobertura de componentes críticos
+- ✅ **Setup Automatizado**: Script de instalación y configuración
+- ✅ **Validación Robusta**: Múltiples capas de validación de datos
+- ✅ **Manejo de Errores**: Sistema centralizado con mensajes contextuales
 
 ## 🎨 Diseño Visual
 
