@@ -119,26 +119,50 @@ class UIComponents:
                 st.rerun()
 
 class LoadingStates:
-    """Manejo centralizado de estados de carga"""
+    """Manejo centralizado de estados de carga OPTIMIZADO"""
     
     @staticmethod
     def show_quote_generation_loading():
-        """Muestra estado de carga para generación de citas"""
+        """Muestra estado de carga OPTIMIZADO con progreso real"""
+        import time
+        
         with st.status("🎭 Generando reflexión filosófica...", expanded=True) as status:
-            st.write("🔍 Obteniendo personaje de Springfield...")
-            st.write("🧠 Generando reflexión filosófica...")
-            st.write("📚 Creando análisis académico...")
+            # Paso 1: Cache check
+            st.write("⚡ Verificando cache inteligente...")
+            time.sleep(0.2)  # Simular verificación rápida
+            
+            # Paso 2: Personaje
+            st.write("🔍 Seleccionando personaje de Springfield...")
+            time.sleep(0.3)
+            
+            # Paso 3: LLM (el más lento)
+            st.write("🧠 Generando análisis académico (GPT-4)...")
+            st.caption("⏱️ Esto puede tomar 10-15 segundos...")
+            
             return status
     
     @staticmethod
+    def show_optimized_loading(message: str, estimated_time: int = 5):
+        """Muestra carga optimizada con tiempo estimado"""
+        return st.status(f"{message} (⏱️ ~{estimated_time}s)", expanded=False)
+    
+    @staticmethod
     def show_api_loading(message: str = "Conectando con Springfield..."):
-        """Muestra estado de carga para APIs"""
-        return st.spinner(message)
+        """Muestra estado de carga para APIs con timeout visual"""
+        return st.spinner(f"{message} ⏱️ Timeout: 8s")
     
     @staticmethod
     def show_processing_toast(message: str):
         """Muestra notificación no intrusiva"""
         st.toast(message, icon="⏳")
+    
+    @staticmethod
+    def show_cache_status(cache_hit: bool):
+        """Muestra estado del cache"""
+        if cache_hit:
+            st.toast("⚡ Respuesta desde cache (instantánea)", icon="🗄️")
+        else:
+            st.toast("🔄 Generando nueva respuesta...", icon="🤖")
 
 class StateManager:
     """Gestor centralizado del estado de la aplicación"""

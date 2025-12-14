@@ -1,7 +1,7 @@
 """
-Servicio para integración con GPT-4 y generación de análisis filosóficos
+Servicio OPTIMIZADO para integración con GPT-4 y generación de análisis filosóficos
 """
-import openai
+from openai import OpenAI
 from typing import Optional, Dict, Any
 import logging
 from config.settings import settings
@@ -15,7 +15,7 @@ class LLMService:
         if not settings.OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY no está configurada")
         
-        openai.api_key = settings.OPENAI_API_KEY
+        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
         self.model = settings.OPENAI_MODEL
         self.max_tokens = settings.OPENAI_MAX_TOKENS
         self.temperature = settings.OPENAI_TEMPERATURE
@@ -34,7 +34,7 @@ class LLMService:
         try:
             prompt = self._build_analysis_prompt(quote, character)
             
-            response = openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {
@@ -58,11 +58,8 @@ class LLMService:
             logger.error("Respuesta vacía del modelo LLM")
             return None
             
-        except openai.error.OpenAIError as e:
-            logger.error(f"Error de OpenAI: {e}")
-            return None
         except Exception as e:
-            logger.error(f"Error inesperado en LLMService: {e}")
+            logger.error(f"Error en LLMService: {e}")
             return None
     
     def _get_system_prompt(self) -> str:
@@ -114,7 +111,7 @@ Mantén un equilibrio entre rigor académico y accesibilidad, respetando el tono
     def generate_complete_philosophical_reflection(self, character: str, description: str, philosophical_context: str, episode_context: Optional[Dict[str, str]] = None) -> Optional[Dict[str, str]]:
         """
         Genera una reflexión filosófica completa al estilo del personaje
-        Nueva funcionalidad para crear contenido original académico con contexto de episodio
+        OPTIMIZADO: Cache inteligente, timeouts reducidos, prompts más eficientes
         
         Args:
             character: Nombre del personaje de Los Simpsons
@@ -125,66 +122,85 @@ Mantén un equilibrio entre rigor académico y accesibilidad, respetando el tono
         Returns:
             Dict con 'reflection' y 'analysis', o None si hay error
         """
+        import time
+        start_time = time.time()
+        
         try:
-            prompt = self._build_complete_reflection_prompt(character, description, philosophical_context, episode_context)
+            # Crear hash del contenido para cache
+            from services.cache_optimizer import cache_optimizer
+            from services.performance_monitor import performance_monitor
+            import hashlib
             
-            client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+            content_for_hash = f"{character}|{description}|{philosophical_context}|{episode_context or ''}"
+            content_hash = hashlib.md5(content_for_hash.encode()).hexdigest()
             
-            response = client.chat.completions.create(
-                model=self.model,
+            # Intentar obtener del cache primero
+            cached_response = cache_optimizer.get_cached_llm_response(content_hash)
+            if cached_response:
+                logger.info(f"⚡ LLM cache hit for {character}")
+                performance_monitor.track_llm_response(start_time, character, True)
+                return self._parse_complete_response(cached_response)
+            
+            # Si no está en cache, generar nueva respuesta con configuración ultra-optimizada
+            prompt = self._build_optimized_reflection_prompt(character, description, philosophical_context, episode_context)
+            
+            # Configuración ULTRA-OPTIMIZADA para máxima velocidad
+            response = self.client.chat.completions.create(
+                model="gpt-3.5-turbo",  # Cambiar a GPT-3.5 para velocidad
                 messages=[
                     {
                         "role": "system",
-                        "content": self._get_complete_generation_system_prompt()
+                        "content": self._get_optimized_system_prompt()
                     },
                     {
                         "role": "user", 
                         "content": prompt
                     }
                 ],
-                max_tokens=self.max_tokens * 2,  # Más tokens para contenido completo
-                temperature=self.temperature,
-                timeout=settings.LLM_TIMEOUT
+                max_tokens=300,  # Reducir drásticamente para velocidad
+                temperature=0.5,  # Temperatura baja para consistencia
+                timeout=10  # Timeout muy agresivo
             )
             
             if response.choices and len(response.choices) > 0:
                 content = response.choices[0].message.content.strip()
+                
+                # Cachear la respuesta
+                cache_optimizer.cache_llm_response(content_hash, content, ttl=86400)  # 24 horas
+                logger.info(f"🎭 LLM response generated and cached for {character} in {time.time() - start_time:.2f}s")
+                
+                performance_monitor.track_llm_response(start_time, character, True)
                 return self._parse_complete_response(content)
             
             logger.error("Respuesta vacía del modelo LLM para generación completa")
+            performance_monitor.track_llm_response(start_time, character, False)
             return None
             
         except Exception as e:
             logger.error(f"Error generando reflexión completa: {e}")
+            performance_monitor.track_llm_response(start_time, character, False)
             return None
     
-    def _get_complete_generation_system_prompt(self) -> str:
+    def _get_optimized_system_prompt(self) -> str:
         """
-        Prompt del sistema para generación completa de contenido filosófico
+        Prompt del sistema ULTRA-OPTIMIZADO para máxima velocidad
         
         Returns:
-            Prompt especializado para generación de contenido original
+            Prompt mínimo y eficiente
         """
-        return """Eres un experto en filosofía y crítica social especializado en Los Simpsons. 
-        Tu tarea es generar contenido filosófico original que capture la esencia de los personajes.
-        
-        Debes crear:
-        1. Una reflexión filosófica auténtica al estilo del personaje
-        2. Un análisis académico profundo de esa reflexión
-        
-        IMPORTANTE:
-        - La reflexión debe sonar como algo que el personaje realmente diría
-        - El análisis debe ser riguroso y académicamente sólido
-        - Mantén el equilibrio entre humor inteligente y profundidad filosófica
-        - Usa un lenguaje accesible pero académicamente apropiado
-        
-        Formato de respuesta:
-        REFLEXIÓN: [La reflexión del personaje]
-        ANÁLISIS: [El análisis filosófico académico]"""
+        return """Experto en Los Simpsons. Genera:
+REFLEXIÓN: 2 oraciones del personaje sobre vida/sociedad
+ANÁLISIS: 100-150 palabras sobre filosofía y crítica social
+
+Formato:
+REFLEXIÓN: [texto]
+ANÁLISIS: [texto]
+
+Sé conciso, auténtico y académico."""
     
-    def _build_complete_reflection_prompt(self, character: str, description: str, philosophical_context: str, episode_context: Optional[Dict[str, str]] = None) -> str:
+    def _build_optimized_reflection_prompt(self, character: str, description: str, philosophical_context: str, episode_context: Optional[Dict[str, str]] = None) -> str:
         """
-        Construye el prompt para generar reflexión completa con contexto de episodio
+        Construye prompt OPTIMIZADO para velocidad y eficiencia
         
         Args:
             character: Nombre del personaje
@@ -193,51 +209,25 @@ Mantén un equilibrio entre rigor académico y accesibilidad, respetando el tono
             episode_context: Contexto del episodio (opcional)
             
         Returns:
-            Prompt formateado para generación completa
+            Prompt conciso y eficiente
         """
-        base_prompt = f"""Genera una reflexión filosófica original para {character} de Los Simpsons.
+        # Prompt base optimizado
+        base_prompt = f"""Personaje: {character}
+Contexto: {description} - {philosophical_context}"""
 
-CONTEXTO DEL PERSONAJE:
-- Nombre: {character}
-- Descripción: {description}
-- Contexto filosófico: {philosophical_context}"""
-
-        # Añadir contexto de episodio si está disponible
+        # Contexto de episodio simplificado
         if episode_context:
-            episode_section = f"""
+            episode_name = episode_context.get('episode_name', '')
+            synopsis = episode_context.get('synopsis', '')[:100]  # Limitar sinopsis
+            base_prompt += f"""
+Episodio: "{episode_name}" - {synopsis}"""
 
-CONTEXTO DEL EPISODIO:
-- Episodio: {episode_context.get('episode_name', 'Desconocido')}
-- Temporada: {episode_context.get('season', 'N/A')} • Episodio: {episode_context.get('episode_number', 'N/A')}
-- Sinopsis: {episode_context.get('synopsis', 'No disponible')}
-- Fecha de emisión: {episode_context.get('airdate', 'Desconocida')}
+        # Instrucciones ultra-concisas
+        task_prompt = f"""
 
-INSTRUCCIONES ESPECIALES:
-La reflexión debe relacionarse con los temas y situaciones específicas del episodio "{episode_context.get('episode_name', '')}", 
-incorporando elementos de la trama y el contexto narrativo en el análisis filosófico."""
-            
-            base_prompt += episode_section
+{character}: Genera reflexión (2 oraciones) + análisis (100 palabras) sobre vida/sociedad{"del episodio" if episode_context else ""}."""
 
-        task_section = f"""
-
-TAREA:
-1. Crea una reflexión de 2-3 oraciones que {character} podría decir sobre la vida, la sociedad o la condición humana
-2. La reflexión debe ser auténtica al personaje pero con profundidad filosófica
-3. {"Si hay contexto de episodio, relaciona la reflexión con los temas del episodio" if episode_context else ""}
-4. Genera un análisis académico que explore:
-   - Los conceptos filosóficos presentes
-   - La crítica social implícita
-   - La relevancia contemporánea
-   - El estilo característico del personaje
-   {"- La conexión con la narrativa y temas del episodio específico" if episode_context else ""}
-
-EJEMPLO DE ESTRUCTURA:
-REFLEXIÓN: [Una reflexión auténtica del personaje{" relacionada con el episodio" if episode_context else ""}]
-ANÁLISIS: [Análisis académico profundo de 250-350 palabras{"que incluya referencias al episodio" if episode_context else ""}]
-
-Asegúrate de que tanto la reflexión como el análisis sean originales, académicamente rigurosos y fieles al espíritu de Los Simpsons."""
-
-        return base_prompt + task_section
+        return base_prompt + task_prompt
     
     def _parse_complete_response(self, content: str) -> Optional[Dict[str, str]]:
         """

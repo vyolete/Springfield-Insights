@@ -19,6 +19,8 @@ from ui.components import (
     UIComponents, LoadingStates, StateManager, 
     ErrorHandler, PerformanceOptimizer, ResponsiveLayout
 )
+from services.performance_monitor import performance_monitor
+from services.cache_optimizer import cache_optimizer, setup_automatic_cleanup
 
 # Configuración de logging optimizada
 logging.basicConfig(
@@ -71,7 +73,12 @@ class SpringfieldInsightsOptimized:
     
     def run(self):
         """Ejecuta la aplicación principal con control de flujo optimizado"""
+        start_time = time.time()
+        
         try:
+            # Configurar limpieza automática de cache
+            setup_automatic_cleanup()
+            
             # Verificar configuración (solo si es necesario)
             if not self._check_configuration():
                 return
@@ -81,6 +88,9 @@ class SpringfieldInsightsOptimized:
             
             # Renderizar interfaz principal
             self._render_main_interface()
+            
+            # Trackear tiempo de carga de página
+            performance_monitor.track_page_load(start_time, "main_app")
             
         except Exception as e:
             logger.error(f"Error crítico en la aplicación: {e}")
@@ -226,7 +236,7 @@ class SpringfieldInsightsOptimized:
         self._render_optimized_sidebar()
         
         # Navegación por pestañas
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["🎲 Explorar", "📺 Episodios", "⭐ Favoritos", "📊 Analytics", "ℹ️ Acerca de"])
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🎲 Explorar", "📺 Episodios", "⭐ Favoritos", "📊 Analytics", "⚡ Performance", "ℹ️ Acerca de"])
         
         with tab1:
             self._render_explore_tab_optimized()
@@ -241,6 +251,9 @@ class SpringfieldInsightsOptimized:
             self._render_analytics_tab_optimized()
         
         with tab5:
+            self._render_performance_tab()
+        
+        with tab6:
             self._render_about_tab_optimized()
     
     def _render_optimized_sidebar(self):
@@ -263,6 +276,9 @@ class SpringfieldInsightsOptimized:
             with col2:
                 favorites_count = len(self.services['favorites_manager'].load_favorites())
                 st.metric("Favoritos", favorites_count)
+            
+            # Métricas de performance
+            performance_monitor.render_performance_sidebar()
             
             # Estado del sistema
             st.markdown("### 🔧 Estado del Sistema")
@@ -493,6 +509,135 @@ class SpringfieldInsightsOptimized:
             
             finally:
                 StateManager.set_processing(False)
+    
+    def _render_performance_tab(self):
+        """Renderiza pestaña de métricas de performance"""
+        st.markdown("## ⚡ Métricas de Performance")
+        st.markdown("Monitoreo en tiempo real del rendimiento de la aplicación")
+        
+        # Métricas detalladas
+        performance_monitor.render_detailed_metrics()
+        
+        st.markdown("---")
+        
+        # Estadísticas de cache
+        from services.cache_optimizer import render_cache_stats
+        render_cache_stats()
+        
+        st.markdown("---")
+        
+        # Información del sistema
+        st.markdown("### 💻 Información del Sistema")
+        
+        try:
+            import psutil
+            import platform
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                cpu_percent = psutil.cpu_percent(interval=1)
+                st.metric("CPU", f"{cpu_percent:.1f}%")
+            
+            with col2:
+                memory = psutil.virtual_memory()
+                memory_percent = memory.percent
+                st.metric("RAM Sistema", f"{memory_percent:.1f}%")
+            
+            with col3:
+                disk = psutil.disk_usage('/')
+                disk_percent = disk.percent
+                st.metric("Disco", f"{disk_percent:.1f}%")
+            
+            # Información adicional
+            with st.expander("🔧 Detalles del Sistema"):
+                st.markdown(f"**Sistema Operativo:** {platform.system()} {platform.release()}")
+                st.markdown(f"**Procesador:** {platform.processor()}")
+                st.markdown(f"**Python:** {platform.python_version()}")
+                st.markdown(f"**Arquitectura:** {platform.architecture()[0]}")
+                
+        except ImportError:
+            st.info("📊 Instala `psutil` para ver métricas detalladas del sistema")
+        
+        # Recomendaciones de optimización
+        st.markdown("### 💡 Recomendaciones de Optimización")
+        
+        summary = performance_monitor.get_performance_summary()
+        
+        recommendations = []
+        
+        # Analizar métricas y generar recomendaciones
+        if summary.get('current_memory', 0) > 300:
+            recommendations.append("🧹 **Memoria alta detectada** - Considera limpiar el cache")
+        
+        if summary.get('avg_page_load', 0) > 3:
+            recommendations.append("⚡ **Carga lenta detectada** - Verifica tu conexión a internet")
+        
+        cache_efficiency = summary.get('cache_efficiency', {})
+        if cache_efficiency:
+            avg_cache = sum(cache_efficiency.values()) / len(cache_efficiency)
+            if avg_cache < 70:
+                recommendations.append("🗄️ **Baja eficiencia de cache** - Los datos se están regenerando frecuentemente")
+        
+        if summary.get('recent_errors', 0) > 0:
+            recommendations.append("🚨 **Errores recientes detectados** - Revisa la configuración de APIs")
+        
+        if not recommendations:
+            recommendations.append("✅ **¡Excelente!** - La aplicación está funcionando de manera óptima")
+        
+        for rec in recommendations:
+            st.markdown(f"- {rec}")
+        
+        # Acciones de optimización
+        st.markdown("### 🛠️ Acciones de Optimización")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if st.button("🧹 Limpieza Completa", use_container_width=True):
+                cache_optimizer.clear_all_caches()
+                performance_monitor._trigger_memory_cleanup()
+                st.success("✅ Limpieza completa realizada")
+                st.rerun()
+        
+        with col2:
+            if st.button("🔄 Reiniciar Métricas", use_container_width=True):
+                # Reiniciar métricas de performance
+                performance_monitor.metrics = {
+                    'page_load_time': [],
+                    'search_time': [],
+                    'llm_response_time': [],
+                    'memory_usage': [],
+                    'cache_hit_rate': {},
+                    'api_calls': [],
+                    'errors': []
+                }
+                st.success("✅ Métricas reiniciadas")
+                st.rerun()
+        
+        with col3:
+            if st.button("📊 Exportar Métricas", use_container_width=True):
+                import json
+                from datetime import datetime
+                
+                metrics_export = {
+                    'timestamp': datetime.now().isoformat(),
+                    'performance_summary': summary,
+                    'cache_stats': cache_optimizer.get_global_cache_stats(),
+                    'system_info': {
+                        'platform': platform.system(),
+                        'python_version': platform.python_version()
+                    }
+                }
+                
+                json_str = json.dumps(metrics_export, indent=2, default=str)
+                
+                st.download_button(
+                    label="📥 Descargar Métricas (JSON)",
+                    data=json_str,
+                    file_name=f"springfield_insights_metrics_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                    mime="application/json"
+                )
     
     def _render_favorites_tab_optimized(self):
         """Renderiza pestaña de favoritos optimizada"""

@@ -56,9 +56,9 @@ class Settings:
     # CONFIGURACIÓN DEL MODELO LLM
     # ========================================
     
-    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4")
-    OPENAI_MAX_TOKENS: int = int(os.getenv("OPENAI_MAX_TOKENS", "500"))
-    OPENAI_TEMPERATURE: float = float(os.getenv("OPENAI_TEMPERATURE", "0.7"))
+    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")  # Cambiado para velocidad
+    OPENAI_MAX_TOKENS: int = int(os.getenv("OPENAI_MAX_TOKENS", "300"))  # Reducido drásticamente
+    OPENAI_TEMPERATURE: float = float(os.getenv("OPENAI_TEMPERATURE", "0.5"))  # Optimizado para velocidad
     
     # ========================================
     # CONFIGURACIÓN DE LA APLICACIÓN
@@ -69,11 +69,11 @@ class Settings:
     APP_VERSION: str = "1.0.0"
     
     # ========================================
-    # CONFIGURACIÓN DE TIMEOUTS Y RENDIMIENTO
+    # CONFIGURACIÓN DE TIMEOUTS Y RENDIMIENTO (OPTIMIZADA)
     # ========================================
     
-    API_TIMEOUT: int = int(os.getenv("API_TIMEOUT", "10"))
-    LLM_TIMEOUT: int = int(os.getenv("LLM_TIMEOUT", "30"))
+    API_TIMEOUT: int = int(os.getenv("API_TIMEOUT", "5"))  # Muy agresivo para APIs
+    LLM_TIMEOUT: int = int(os.getenv("LLM_TIMEOUT", "10"))  # Timeout muy agresivo para LLM
     
     # ========================================
     # CONFIGURACIÓN DE DESARROLLO
