@@ -166,33 +166,67 @@ class UIComponents:
         return " ".join(caption_parts)
     
     def render_quote_card(self, quote_data):
-        """Renderiza la tarjeta de la cita con diseño mejorado"""
+        """Renderiza la tarjeta de la cita usando componentes nativos de Streamlit"""
         
         # Obtener información adicional si está disponible
         character_info = quote_data.get("character_info", {})
         source_info = "🌐 API Oficial" if quote_data.get("source") == "api" else "📚 Base Local"
         
-        st.markdown(f"""
-        <div class="quote-card">
-            <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;'>
-                <div class="character-name">{quote_data["character"]}</div>
-                <div style='font-size: 12px; color: #666; background: rgba(255,255,255,0.7); padding: 4px 8px; border-radius: 12px;'>
-                    {source_info}
-                </div>
-            </div>
+        # Crear contenedor con estilo personalizado
+        with st.container():
+            # CSS para este contenedor específico
+            st.markdown("""
+            <style>
+            .quote-container {
+                background: linear-gradient(135deg, #FFD700, #FFA500);
+                padding: 25px;
+                border-radius: 15px;
+                border-left: 5px solid #FF6347;
+                margin: 15px 0;
+                box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+            }
+            </style>
+            """, unsafe_allow_html=True)
             
-            <div class="quote-text" style='font-size: 20px; line-height: 1.6; margin-bottom: 20px; text-align: center; font-weight: 500;'>
+            # Header con nombre del personaje y fuente
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.markdown(f"### 🎭 {quote_data['character']}")
+            with col2:
+                st.caption(source_info)
+            
+            # Frase principal con estilo destacado
+            st.markdown("---")
+            st.markdown(f"""
+            <div style='text-align: center; font-size: 22px; font-style: italic; 
+                        color: #2F4F4F; margin: 20px 0; font-weight: 500; 
+                        background: rgba(255,255,255,0.7); padding: 15px; 
+                        border-radius: 10px;'>
                 "{quote_data["quote"]}"
             </div>
+            """, unsafe_allow_html=True)
             
-            <div style='background: rgba(255,255,255,0.8); padding: 12px; border-radius: 8px; border-left: 3px solid #FF6347;'>
-                <strong style='color: #FF6347;'>💭 Contexto Filosófico:</strong>
-                <div style='margin-top: 8px; line-height: 1.5;'>{quote_data["context"]}</div>
-            </div>
+            # Contexto filosófico
+            st.markdown("**💭 Contexto Filosófico:**")
+            st.info(quote_data["context"])
             
-            {self._render_character_details(character_info)}
-        </div>
-        """, unsafe_allow_html=True)
+            # Información adicional del personaje si está disponible
+            if character_info:
+                st.markdown("**ℹ️ Información del Personaje:**")
+                
+                info_cols = st.columns(3)
+                
+                if character_info.get('occupation') and character_info['occupation'] != 'Unknown':
+                    with info_cols[0]:
+                        st.metric("👔 Ocupación", character_info['occupation'])
+                
+                if character_info.get('age'):
+                    with info_cols[1]:
+                        st.metric("🎂 Edad", f"{character_info['age']} años")
+                
+                if character_info.get('status') and character_info['status'] != 'Unknown':
+                    with info_cols[2]:
+                        st.metric("📊 Estado", character_info['status'])
     
     def _render_character_details(self, character_info: dict) -> str:
         """
@@ -230,24 +264,49 @@ class UIComponents:
         return ""
     
     def render_analysis(self, analysis):
-        """Renderiza la sección de análisis con formato mejorado"""
+        """Renderiza la sección de análisis usando componentes nativos de Streamlit"""
         
-        # Procesar el análisis para mejor presentación
-        formatted_analysis = self._format_analysis_text(analysis)
-        
-        st.markdown(f"""
-        <div class="analysis-section">
-            <h4 style='color: #4169E1; margin-bottom: 15px; display: flex; align-items: center;'>
-                🧠 Análisis Filosófico Generado por GPT-4
-            </h4>
-            <div style='line-height: 1.8; font-size: 16px; color: #2F4F4F;'>
-                {formatted_analysis}
+        # Contenedor para el análisis
+        with st.container():
+            # CSS para el contenedor de análisis
+            st.markdown("""
+            <style>
+            .analysis-header {
+                background: linear-gradient(135deg, #F0F8FF, #E6F3FF);
+                padding: 15px;
+                border-radius: 10px;
+                border-left: 5px solid #4169E1;
+                margin: 20px 0 10px 0;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Header del análisis
+            st.markdown("""
+            <div class="analysis-header">
+                <h4 style='color: #4169E1; margin: 0; display: flex; align-items: center;'>
+                    🧠 Análisis Filosófico Generado por GPT-4
+                </h4>
             </div>
-            <div style='margin-top: 15px; padding-top: 10px; border-top: 1px solid #E0E0E0; font-size: 12px; color: #666;'>
-                <em>💡 Análisis generado automáticamente por inteligencia artificial</em>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
+            
+            # Contenido del análisis con mejor formato
+            if analysis:
+                # Dividir el análisis en párrafos para mejor legibilidad
+                paragraphs = analysis.split('\n\n')
+                
+                for paragraph in paragraphs:
+                    if paragraph.strip():
+                        # Detectar si es un título (termina con :)
+                        if paragraph.strip().endswith(':') and len(paragraph.strip()) < 100:
+                            st.markdown(f"**{paragraph.strip()}**")
+                        else:
+                            st.write(paragraph.strip())
+            else:
+                st.warning("No se pudo generar el análisis filosófico.")
+            
+            # Footer con información
+            st.caption("💡 Análisis generado automáticamente por inteligencia artificial")
     
     def _format_analysis_text(self, analysis: str) -> str:
         """
