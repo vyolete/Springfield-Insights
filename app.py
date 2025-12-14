@@ -154,61 +154,203 @@ class SpringfieldInsightsApp:
                 st.toast("🔗 Enlace copiado", icon="📤")
     
     def _render_welcome_message(self):
-        """Renderiza el mensaje de bienvenida"""
-        st.info("""
-        🎭 **¡Bienvenido a Springfield Insights!**
+        """Renderiza el mensaje de bienvenida mejorado"""
         
-        Explora frases auténticas de Los Simpsons con análisis filosófico 
-        profundo generado por GPT-4.
+        # Mensaje principal con mejor diseño
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, #E6F3FF, #F0F8FF); padding: 30px; border-radius: 15px; border-left: 5px solid #4169E1; margin: 20px 0;'>
+            <h2 style='color: #2F4F4F; text-align: center; margin-bottom: 20px;'>
+                🎭 ¡Bienvenido a Springfield Insights!
+            </h2>
+            <p style='font-size: 18px; color: #2F4F4F; text-align: center; margin-bottom: 25px;'>
+                Descubre la <strong>profundidad filosófica</strong> oculta en Los Simpsons mediante 
+                <strong>inteligencia artificial avanzada</strong>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        ✨ **Características:**
-        - Frases reales de la serie
-        - Análisis académico riguroso  
-        - Crítica social y filosófica
-        - Interfaz optimizada
-        """)
+        # Características en columnas
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("""
+            <div style='text-align: center; padding: 20px; background: #FFF8DC; border-radius: 10px; margin: 10px 0;'>
+                <h3 style='color: #FF6347;'>🎯 Frases Auténticas</h3>
+                <p style='color: #2F4F4F;'>Directamente de la API oficial de Los Simpsons</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div style='text-align: center; padding: 20px; background: #F0F8FF; border-radius: 10px; margin: 10px 0;'>
+                <h3 style='color: #4169E1;'>🧠 Análisis GPT-4</h3>
+                <p style='color: #2F4F4F;'>Interpretación filosófica profunda y académica</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown("""
+            <div style='text-align: center; padding: 20px; background: #F5FFFA; border-radius: 10px; margin: 10px 0;'>
+                <h3 style='color: #228B22;'>🏛️ Rigor Académico</h3>
+                <p style='color: #2F4F4F;'>Crítica social y contexto filosófico</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Instrucciones de uso
+        st.markdown("### 🚀 ¿Cómo empezar?")
+        
+        st.markdown("""
+        <div style='background: #FFFACD; padding: 20px; border-radius: 10px; border-left: 4px solid #FFD700;'>
+            <ol style='color: #2F4F4F; font-size: 16px; line-height: 1.8;'>
+                <li><strong>Haz clic</strong> en el botón amarillo <em>"🎲 Obtener Nueva Reflexión Filosófica"</em></li>
+                <li><strong>Observa</strong> la imagen oficial del personaje desde el CDN</li>
+                <li><strong>Lee</strong> la frase auténtica de Los Simpsons</li>
+                <li><strong>Explora</strong> el análisis filosófico generado por GPT-4</li>
+                <li><strong>Interactúa</strong> con los botones para copiar, guardar o compartir</li>
+            </ol>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Datos curiosos
+        st.markdown("### 📊 ¿Sabías que...?")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.info("""
+            **🎭 Los Simpsons** es una de las series más longevas de la televisión, 
+            con más de **30 años** explorando temas sociales, políticos y filosóficos 
+            a través del humor inteligente.
+            """)
+        
+        with col2:
+            st.info("""
+            **🤖 GPT-4** puede identificar referencias filosóficas, críticas sociales 
+            y contextos culturales que a menudo pasan desapercibidos en una 
+            primera lectura de las citas.
+            """)
     
     def _render_sidebar(self):
-        """Renderiza la barra lateral"""
+        """Renderiza la barra lateral mejorada y amigable"""
         with st.sidebar:
-            st.markdown("### 📊 Estadísticas")
+            # Logo y título del sidebar
+            st.markdown("""
+            <div style='text-align: center; padding: 10px; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 10px; margin-bottom: 20px;'>
+                <h2 style='color: #2F4F4F; margin: 0;'>🍩 Springfield</h2>
+                <p style='color: #2F4F4F; margin: 0; font-size: 14px;'>Panel de Control</p>
+            </div>
+            """, unsafe_allow_html=True)
             
-            # Verificar estado de la API
+            # Estado de conexión con diseño mejorado
             api_status = quotes_manager.get_api_status()
             
+            st.markdown("### 🌐 Estado de Conexión")
             if api_status.get('available'):
-                st.metric("Fuente de datos", "API Real + Local")
-                st.success("🌐 API de Simpsons conectada")
+                st.success("🟢 **API Oficial Conectada**")
+                st.caption("Obteniendo frases reales de Los Simpsons")
             else:
-                st.metric("Fuente de datos", "Local (Fallback)")
-                st.warning("⚠️ API no disponible, usando fallback")
+                st.warning("🟡 **Modo Local Activo**")
+                st.caption("Usando base de datos local de respaldo")
             
-            st.metric("Frases locales", len(SIMPSONS_QUOTES))
+            # Estadísticas con mejor formato
+            st.markdown("### 📊 Estadísticas de Sesión")
             
-            if 'analyses_generated' not in st.session_state:
-                st.session_state.analyses_generated = 0
-            st.metric("Análisis generados", st.session_state.analyses_generated)
+            col1, col2 = st.columns(2)
+            with col1:
+                if 'analyses_generated' not in st.session_state:
+                    st.session_state.analyses_generated = 0
+                st.metric(
+                    label="Análisis",
+                    value=st.session_state.analyses_generated,
+                    delta="GPT-4"
+                )
             
-            st.markdown("### 🎯 Acerca de")
-            st.markdown("""
-            **Springfield Insights** combina el humor inteligente de Los Simpsons 
-            con análisis filosófico académico usando GPT-4.
+            with col2:
+                st.metric(
+                    label="Frases",
+                    value=len(SIMPSONS_QUOTES),
+                    delta="Locales"
+                )
             
-            - **Frases auténticas** de la API oficial
-            - **Análisis profundo** con GPT-4
-            - **Crítica social** contextualizada
-            - **Sistema híbrido** API + fallback local
+            # Información del proyecto con mejor diseño
+            st.markdown("### 🎯 Sobre el Proyecto")
+            
+            with st.expander("📖 ¿Qué es Springfield Insights?", expanded=False):
+                st.markdown("""
+                Una aplicación académica que utiliza **inteligencia artificial** 
+                para explorar la profundidad filosófica presente en Los Simpsons.
+                
+                🧠 **Análisis con GPT-4**  
+                🎭 **Frases auténticas**  
+                🏛️ **Enfoque académico**  
+                🔄 **Sistema híbrido**
+                """)
+            
+            with st.expander("⚙️ Tecnologías Utilizadas", expanded=False):
+                st.markdown("""
+                **🤖 Inteligencia Artificial:**
+                - OpenAI GPT-4 para análisis filosófico
+                
+                **🌐 Fuentes de Datos:**
+                - API oficial de Los Simpsons
+                - CDN optimizado para imágenes
+                
+                **💻 Tecnologías Web:**
+                - Python + Streamlit
+                - Sistema híbrido API + Local
+                """)
+            
+            with st.expander("🎓 Valor Académico", expanded=False):
+                st.markdown("""
+                **📚 Objetivos Educativos:**
+                - Análisis cultural mediante IA
+                - Crítica social contemporánea
+                - Filosofía en cultura popular
+                
+                **🏆 Características Académicas:**
+                - Rigor metodológico
+                - Fuentes auténticas
+                - Análisis contextualizado
+                """)
+            
+            # Sección de ayuda
+            st.markdown("### 💡 Cómo Usar")
+            st.info("""
+            **1.** Haz clic en **"Obtener Nueva Reflexión"**
+            
+            **2.** Lee la cita del personaje
+            
+            **3.** Explora el **análisis filosófico** generado por GPT-4
+            
+            **4.** Usa los botones para **copiar**, **guardar** o **compartir**
             """)
             
-            st.markdown("### ⚙️ Estado del Sistema")
-            st.success("✅ GPT-4 configurado")
+            # Estado del sistema con iconos
+            st.markdown("### 🔧 Estado del Sistema")
             
+            # GPT-4 Status
+            st.markdown("**🤖 Inteligencia Artificial:**")
+            st.success("✅ GPT-4 Operativo")
+            
+            # API Status
+            st.markdown("**🌐 Fuente de Datos:**")
             if api_status.get('available'):
-                st.success("✅ API de Simpsons conectada")
+                st.success("✅ API Oficial Conectada")
             else:
-                st.info("🔄 Modo fallback local")
+                st.info("🔄 Modo Local Activo")
             
-            st.info("🚀 Sistema operativo")
+            # Performance Status
+            st.markdown("**⚡ Rendimiento:**")
+            st.success("✅ CDN Optimizado")
+            
+            # Footer del sidebar
+            st.markdown("---")
+            st.markdown("""
+            <div style='text-align: center; color: #666; font-size: 12px;'>
+                <p>🍩 Springfield Insights v1.0</p>
+                <p>Filosofía + IA + Los Simpsons</p>
+            </div>
+            """, unsafe_allow_html=True)
 
 def main():
     """Función principal"""
