@@ -1,0 +1,24 @@
+[
+  {
+    "quote": "\"Quizás, la verdadera tragedia de la vida no es que nos quedamos sin tiempo, sino que desperdiciamos el tiempo que tenemos persiguiendo cosas que realmente no importan, en lugar de centrarnos en las conexiones humanas y en hacer del mundo un lugar mejor.\"",
+    "character": "Lisa Simpson",
+    "image": "https://via.placeholder.com/300x200/FFD700/000000?text=Lisa+Simpson",
+    "analysis": "En esta reflexión, Lisa Simpson articula una crítica tanto a la condición humana como a la estructura social contemporánea. En su esencia, la reflexión de Lisa es una variante del tema filosófico del \"carpe diem\", alentando a aprovechar el tiempo que tenemos en la Tierra. Sin embargo, le da un giro socialmente consciente que es característico de su personaje.\n\nDesde un punto de vista filosófico, Lisa toma prestado de la filosofía existencialista, que argumenta que la vida no tiene un significado intrínseco, y que somos nosotros quienes le damos significado a través de nuestras acciones y decisiones. Lisa refuerza esta idea al criticar la búsqueda de \"cosas que realmente no importan\", sugiriendo que la sociedad ha perdido de vista lo que verdaderamente importa.\n\nEn términos de crítica social, Lisa está cuestionando las normas y valores de la sociedad contemporánea, particularmente la obsesión con la acumulación material y el estatus social. En cambio, aboga por un enfoque más comunitario y consciente del tiempo, argumentando que deberíamos centrarnos en \"las conexiones humanas y en hacer del mundo un lugar mejor\".\n\nEsta reflexión es relevante en el contexto contemporáneo, ya que cuestiona la cultura de la prisa y el consumismo, alentando a las personas a reflexionar sobre sus prioridades y valores. Al hacerlo, continúa la tradición de Los Simpsons de ofrecer una crítica social mordaz y relevante.\n\nFinalmente, en términos de estilo, la reflexión es típica de Lisa: es inteligente, reflexiva y moralmente consciente, y muestra su habilidad para conectar temas abstractos con problemas sociales concretos.",
+    "success": true,
+    "source": "fallback",
+    "generation_method": "llm_complete",
+    "saved_at": "2025-12-14T14:08:02.450014",
+    "favorite_id": "4841123797292582916"
+  },
+  {
+    "quote": "\"A veces creo que la vida es como hacer una tarta de manzana para la feria del condado. No importa cuánto te esfuerces, siempre habrá alguien que piense que su receta es mejor. Pero al final, lo que importa es que hiciste tu mejor esfuerzo y que tu familia disfrute de esa tarta.\"",
+    "character": "Marge Simpson",
+    "image": "https://via.placeholder.com/300x200/FFD700/000000?text=Marge+Simpson",
+    "analysis": "La reflexión de Marge Simpson es una metáfora de la ética del cuidado, una corriente filosófica que enfatiza la importancia de las relaciones interpersonales y de la responsabilidad hacia los demás. En su comparación de la vida con la preparación de una tarta, Marge sugiere que la acción moral no está necesariamente vinculada a la búsqueda de la perfección absoluta, sino más bien a la dedicación personal a un propósito y a la capacidad para valorar las pequeñas satisfacciones, como la felicidad de la familia.\n\nAdemás, esta reflexión presenta una crítica social implícita a la competencia y al individualismo. Al señalar que siempre habrá alguien que piense que su receta es mejor, Marge subraya la futilidad de compararse constantemente con los demás, una crítica relevante en nuestra sociedad actual, obsesionada con la perfección y la competencia.\n\nFinalmente, la reflexión de Marge refleja su estilo característico: su pragmatismo, su amor por la familia y su capacidad para encontrar sentido y valor en las tareas cotidianas. Aunque Marge no es una filósofa en el sentido tradicional, su reflexión muestra una comprensión profunda y práctica de la vida, enraizada en su experiencia como madre y ama de casa. En resumen, Marge nos recuerda que el valor real de nuestras acciones se mide por su impacto en las personas que nos importan y no por cómo se comparan con las expectativas externas.",
+    "success": true,
+    "source": "fallback",
+    "generation_method": "llm_complete",
+    "saved_at": "2025-12-14T14:18:05.160983",
+    "favorite_id": "8632468538082980003"
+  }
+]

@@ -1,19 +1,28 @@
 """
 Springfield Insights - Aplicación principal
 Explorando la filosofía y crítica social de Los Simpsons
+
+Implementa configuración segura de entorno y validaciones académicas
 """
 import streamlit as st
 import logging
-from config.settings import settings
+import sys
+from pathlib import Path
+
+# Configurar path para imports
+sys.path.append(str(Path(__file__).parent))
+
+from config.settings import settings, validate_environment
+from config.environment_validator import validate_environment_startup
 from logic.quote_processor import QuoteProcessor
 from ui.theme import SimpsonsTheme
 from utils.validators import ErrorHandler
 from data.favorites_manager import FavoritesManager
 from analytics.quote_analytics import QuoteAnalytics
 
-# Configuración de logging
+# Configuración de logging académico
 logging.basicConfig(
-    level=logging.INFO,
+    level=getattr(logging, settings.LOG_LEVEL),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -49,41 +58,109 @@ class SpringfieldInsightsApp:
     
     def _check_configuration(self) -> bool:
         """
-        Verifica que la configuración sea válida
+        Verifica configuración usando validación académica robusta
         
         Returns:
             True si la configuración es correcta, False en caso contrario
         """
-        if not settings.validate_config():
-            st.error("⚠️ Configuración incompleta")
-            st.markdown("""
-            ### Configuración Requerida
-            
-            Para usar Springfield Insights, necesitas configurar:
-            
-            1. **OPENAI_API_KEY**: Tu clave de API de OpenAI
-            
-            #### Cómo configurar:
-            
-            **Opción 1: Variable de entorno**
-            ```bash
-            export OPENAI_API_KEY="tu-api-key-aqui"
-            ```
-            
-            **Opción 2: Archivo .env**
-            ```
-            OPENAI_API_KEY=tu-api-key-aqui
-            ```
-            
-            **Opción 3: Streamlit secrets**
-            ```toml
-            # .streamlit/secrets.toml
-            OPENAI_API_KEY = "tu-api-key-aqui"
-            ```
-            """)
+        # Mostrar banner de configuración
+        if not hasattr(st.session_state, 'config_validated'):
+            with st.spinner("🔍 Validando configuración del entorno..."):
+                can_run, validation_results = validate_environment_startup()
+                st.session_state.config_validated = True
+                st.session_state.can_run = can_run
+                st.session_state.validation_results = validation_results
+        
+        if not st.session_state.can_run:
+            self._show_configuration_error(st.session_state.validation_results)
             return False
         
+        # Mostrar advertencias si las hay
+        self._show_configuration_warnings(st.session_state.validation_results)
+        
         return True
+    
+    def _show_configuration_error(self, validation_results):
+        """Muestra errores de configuración de forma académica"""
+        
+        st.error("🛑 D'oh! Configuración incompleta")
+        
+        st.markdown("""
+        ### 🔧 Configuración Requerida para Springfield Insights
+        
+        Para ejecutar esta aplicación académica, necesitas configurar correctamente el entorno:
+        """)
+        
+        # Mostrar errores específicos
+        for component, result in validation_results.items():
+            if component == 'overall':
+                continue
+                
+            if result['status'] == 'error':
+                st.markdown(f"#### ❌ {component.replace('_', ' ').title()}")
+                for detail in result['details']:
+                    if '❌' in detail:
+                        st.markdown(f"- {detail}")
+        
+        # Guía de configuración
+        st.markdown("""
+        ### 📋 Guía de Configuración Paso a Paso
+        
+        #### 1. Configurar OpenAI API Key
+        
+        **Opción A: Archivo .env (Recomendado para desarrollo)**
+        ```bash
+        # Crear archivo .env en la raíz del proyecto
+        OPENAI_API_KEY=tu-clave-api-de-openai
+        ```
+        
+        **Opción B: Variable de entorno del sistema**
+        ```bash
+        export OPENAI_API_KEY="tu-clave-api-de-openai"
+        ```
+        
+        **Opción C: Streamlit secrets**
+        ```toml
+        # Crear .streamlit/secrets.toml
+        OPENAI_API_KEY = "tu-clave-api-de-openai"
+        ```
+        
+        #### 2. Obtener tu API Key
+        
+        1. Ve a [OpenAI Platform](https://platform.openai.com/api-keys)
+        2. Inicia sesión o crea una cuenta
+        3. Genera una nueva API key
+        4. Copia la clave (empieza con `sk-proj-` o `sk-`)
+        
+        #### 3. Verificar configuración
+        
+        Reinicia la aplicación después de configurar las variables.
+        
+        ### 🎓 Nota Académica
+        
+        Esta aplicación implementa **gestión segura de credenciales** siguiendo 
+        buenas prácticas de ingeniería de software, separando código y configuración 
+        sensible para cumplir con estándares académicos y profesionales.
+        """)
+    
+    def _show_configuration_warnings(self, validation_results):
+        """Muestra advertencias de configuración si las hay"""
+        
+        warnings_found = False
+        
+        for component, result in validation_results.items():
+            if component == 'overall':
+                continue
+                
+            if result['status'] == 'warning':
+                if not warnings_found:
+                    st.warning("⚠️ Configuración válida con advertencias")
+                    warnings_found = True
+                
+                with st.expander(f"Advertencias de {component.replace('_', ' ').title()}"):
+                    for detail in result['details']:
+                        if '⚠️' in detail:
+                            st.write(detail)
     
     def _render_main_interface(self):
         """Renderiza la interfaz principal de la aplicación"""
