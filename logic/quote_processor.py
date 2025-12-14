@@ -19,59 +19,107 @@ class QuoteProcessor:
     
     def get_analyzed_quote(self) -> Optional[Dict[str, Any]]:
         """
-        Obtiene una cita aleatoria y genera su análisis filosófico
+        Obtiene contexto de personaje y genera reflexión filosófica completa
+        Implementa nueva estrategia robusta sin dependencia de citas preexistentes
         
         Returns:
             Dict con la estructura: {
-                'quote': str,
-                'character': str,
-                'image': str (opcional),
-                'analysis': str,
-                'success': bool,
-                'error_message': str (opcional)
+                'quote': str,           # Reflexión generada por LLM
+                'character': str,       # Personaje de Los Simpsons
+                'image': str,          # URL de imagen
+                'analysis': str,       # Análisis filosófico profundo
+                'success': bool,       # Estado de la operación
+                'source': str,         # Fuente de los datos ('api' o 'fallback')
+                'error_message': str   # Mensaje de error (opcional)
             }
         """
         try:
-            # Obtener cita de la API
-            quote_data = self.simpsons_service.get_random_quote()
+            # Obtener contexto del personaje (API o fallback)
+            character_context = self.simpsons_service.get_random_quote()
             
-            if not quote_data:
-                return self._create_error_response("No se pudo obtener una cita de la API")
+            if not character_context or not character_context.get('success'):
+                return self._create_error_response("D'oh! No se pudo obtener información de Springfield")
             
-            # Validar datos de la cita
-            if not self.validator.validate_quote_structure(quote_data):
-                return self._create_error_response("Estructura de cita inválida")
+            # Extraer información del contexto
+            character = character_context.get('character', 'Habitante de Springfield')
+            description = character_context.get('description', 'Personaje de Los Simpsons')
+            philosophical_context = character_context.get('philosophical_context', 'reflexión existencial')
+            image_url = character_context.get('image', '')
+            source = character_context.get('source', 'unknown')
             
-            # Extraer información
-            quote_text = quote_data.get('quote', '').strip()
-            character = quote_data.get('character', '').strip()
-            image_url = quote_data.get('image', '')
+            logger.info(f"🎭 Generando contenido para: {character} (fuente: {source})")
             
-            # Validar contenido
-            if not self.validator.validate_quote_content(quote_text, character):
-                return self._create_error_response("Contenido de cita inválido")
+            # Obtener contexto de episodio si está disponible
+            episode_context = character_context.get('episode_context')
             
-            # Generar análisis filosófico
-            analysis = self.llm_service.generate_philosophical_analysis(quote_text, character)
+            # Generar reflexión filosófica completa usando el LLM
+            generated_content = self.llm_service.generate_complete_philosophical_reflection(
+                character=character,
+                description=description,
+                philosophical_context=philosophical_context,
+                episode_context=episode_context
+            )
             
-            if not analysis:
-                return self._create_error_response("No se pudo generar el análisis filosófico")
+            if not generated_content:
+                return self._create_error_response("Moe dice que el generador de sabiduría está roto...")
             
-            # Validar análisis
-            if not self.llm_service.validate_analysis(analysis):
-                return self._create_error_response("Análisis generado inválido")
+            # Validar contenido generado
+            if not self._validate_generated_content(generated_content):
+                return self._create_error_response("El contenido generado no cumple los estándares académicos")
             
             return {
-                'quote': quote_text,
+                'quote': generated_content.get('reflection', ''),
                 'character': character,
                 'image': image_url,
-                'analysis': analysis,
-                'success': True
+                'analysis': generated_content.get('analysis', ''),
+                'success': True,
+                'source': source,
+                'generation_method': 'llm_complete'
             }
             
         except Exception as e:
             logger.error(f"Error en QuoteProcessor.get_analyzed_quote: {e}")
-            return self._create_error_response(f"Error interno: {str(e)}")
+            return self._create_error_response(f"¡Ay, caramba! Error interno: {str(e)}")
+    
+    def _validate_generated_content(self, content: Dict[str, Any]) -> bool:
+        """
+        Valida que el contenido generado por LLM sea académicamente apropiado
+        
+        Args:
+            content: Contenido generado por el LLM
+            
+        Returns:
+            True si el contenido es válido
+        """
+        if not isinstance(content, dict):
+            return False
+        
+        # Verificar campos requeridos
+        required_fields = ['reflection', 'analysis']
+        if not all(field in content for field in required_fields):
+            return False
+        
+        # Verificar longitud mínima para calidad académica
+        reflection = content.get('reflection', '')
+        analysis = content.get('analysis', '')
+        
+        if len(reflection.strip()) < 50:  # Reflexión muy corta
+            return False
+        
+        if len(analysis.strip()) < 100:  # Análisis muy superficial
+            return False
+        
+        # Verificar que no contenga placeholders o errores comunes
+        problematic_phrases = [
+            '[placeholder]', 'lorem ipsum', 'TODO', 'FIXME',
+            'error', 'failed to generate', 'unable to create'
+        ]
+        
+        full_text = (reflection + ' ' + analysis).lower()
+        if any(phrase in full_text for phrase in problematic_phrases):
+            return False
+        
+        return True
     
     def _create_error_response(self, error_message: str) -> Dict[str, Any]:
         """
