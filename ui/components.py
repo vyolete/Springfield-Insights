@@ -6,139 +6,210 @@ import streamlit as st
 class UIComponents:
     """Componentes reutilizables de la interfaz de usuario"""
     
-    def apply_custom_css(self):
-        """Aplica estilos CSS personalizados"""
-        st.markdown("""
+    def apply_custom_css(self, dark_mode: bool = False):
+        """Aplica estilos CSS personalizados con soporte para tema oscuro"""
+        
+        # Definir paleta de colores basada en el tema
+        if dark_mode:
+            bg_color = "#1E1E1E"
+            text_color = "#FFFFFF"
+            card_bg = "linear-gradient(135deg, #2C2C2C, #424242)"
+            shadow_color = "#000000"
+            quote_text_bg = "#333333"
+            quote_text_color = "#EDEDED"
+        else:
+            bg_color = "#FFFFFF"
+            text_color = "#121212"
+            card_bg = "linear-gradient(135deg, #FFD90F, #FFC107)"
+            shadow_color = "#000000"
+            quote_text_bg = "#FFFFFF"
+            quote_text_color = "#000000"
+            
+        st.markdown(f"""
         <style>
-        .quote-card {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
+        /* Importar fuentes estilo Simpsons */
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Gloria+Hallelujah&display=swap');
+
+        /* Aplicar fuentes con grosor reducido */
+        h1, h2, h3, h4, h5, h6 {{
+            font-family: 'Luckiest Guy', cursive !important;
+            letter-spacing: 0.5px; /* Reducido de 1px */
+            color: {text_color};
+            font-weight: 400 !important; /* Forzar peso normal */
+            text-shadow: 1px 1px 0px #FFD700; /* Sombra reducida para menos saturation */
+        }}
+        
+        div.stMarkdown > div > p {{
+             font-family: 'Gloria Hallelujah', cursive;
+             font-size: 1.1rem;
+             color: {text_color};
+        }}
+
+        .quote-card {{
+            background: {card_bg};
             padding: 20px;
             border-radius: 15px;
-            border-left: 5px solid #FF6347;
+            border: 2px solid {shadow_color}; /* Borde reducido a 2px */
+            box-shadow: 3px 3px 0px {shadow_color}; /* Sombra reducida */
             margin: 10px 0;
-        }
-        .character-name {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2F4F4F;
+        }}
+        
+        .character-name {{
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 28px;
+            color: {text_color} !important;
+            text-shadow: 1px 1px 0px {shadow_color};
             margin-bottom: 10px;
-        }
-        .quote-text {
-            font-size: 18px;
-            font-style: italic;
-            color: #2F4F4F;
+        }}
+        
+        .quote-text {{
+            font-family: 'Gloria Hallelujah', cursive;
+            font-size: 20px;
+            color: {quote_text_color};
+            background: {quote_text_bg};
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px dashed {shadow_color};
             margin-bottom: 15px;
-        }
-        .analysis-section {
-            background: linear-gradient(135deg, #F0F8FF, #E6F3FF);
+        }}
+        
+        .analysis-section {{
+            background: #009DD9; /* Simpson Marge Hair Blue */
+            color: white;
             padding: 25px;
             border-radius: 15px;
-            border-left: 5px solid #4169E1;
+            border: 3px solid #000;
+            box-shadow: 3px 3px 0px #000;
             margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.1);
-        }
-        .main-header {
+        }}
+        
+        .main-header {{
             text-align: center;
             padding: 20px;
             background: linear-gradient(90deg, #FFD700, #FFA500);
             border-radius: 10px;
             margin-bottom: 20px;
-        }
+            border: 2px solid #000;
+        }}
+        
+        .main-header h1, .main-header h3 {{
+             color: #121212 !important;
+             text-shadow: none !important;
+        }}
         
         /* Optimización de imágenes */
-        .stImage > img {
+        .stImage > img {{
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 3px 3px 0px #000;
             transition: transform 0.2s ease;
-        }
+            border: 2px solid #000;
+        }}
         
-        .stImage > img:hover {
+        .stImage > img:hover {{
             transform: scale(1.02);
-        }
+        }}
         
         /* Loading placeholder */
-        .image-loading {
+        .image-loading {{
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
-        }
+        }}
         
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
+        @keyframes loading {{
+            0% {{ background-position: 200% 0; }}
+            100% {{ background-position: -200% 0; }}
+        }}
         
         /* Mejoras generales de legibilidad */
-        .stMarkdown p {
+        .stMarkdown p {{
             line-height: 1.6;
-        }
+        }}
         
-        .stButton > button {
+        .stButton > button {{
             border-radius: 20px;
-            border: none;
+            border: 2px solid #000;
             padding: 0.5rem 1rem;
-            font-weight: 500;
+            font-weight: bold;
             transition: all 0.3s ease;
-        }
+            /* Estilo Simpsons: Amarillo */
+            background: linear-gradient(135deg, #FFD700 0%, #FFC107 100%); 
+            color: #2F4F4F !important; /* Texto oscuro para contraste */
+            box-shadow: 3px 3px 0px rgba(0,0,0,1);
+        }}
         
-        .stButton > button:hover {
+        .stButton > button:hover {{
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+            box-shadow: 5px 5px 0px rgba(0,0,0,1);
+            background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+            color: #000000 !important;
+        }}
+        
+        /* Asegurar que el botón primario de Streamlit también siga este estilo */
+        div[data-testid="stBaseButton-secondary"], div[data-testid="stBaseButton-primary"] {{
+             background: linear-gradient(135deg, #FFD700 0%, #FFC107 100%);
+             color: #2F4F4F;
+             border: 2px solid #000;
+             box-shadow: 3px 3px 0px #000;
+        }}
         
         /* Sidebar mejorado */
-        .css-1d391kg {
-            background-color: #FAFAFA;
-        }
+        .css-1d391kg {{
+            background-color: {bg_color};
+        }}
+        
+        /* General Background Override (trickier in global scope but trying via .stApp) */
+        .stApp {{
+            background-color: {bg_color};
+        }}
         
         /* Métricas mejoradas */
-        .metric-container {
-            background: white;
+        .metric-container {{
+            background: {quote_text_bg};
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 3px 3px 0px #000;
             margin: 10px 0;
-        }
-
-        /* DISEÑO RESPONSIVE (MEDIA QUERIES) */
-        @media (max-width: 768px) {
+            border: 2px solid #000;
+        }}
+        
+        /* Responsive */
+        @media (max-width: 768px) {{
             /* Ajustes para móviles */
-            .main-header {
+            .main-header {{
                 padding: 10px;
-            }
-            .main-header h1 {
+            }}
+            .main-header h1 {{
                 font-size: 1.8rem !important;
-            }
-            .main-header h3 {
+            }}
+            .main-header h3 {{
                 font-size: 1rem !important;
-            }
+            }}
             
-            .quote-card, .quote-container, .analysis-section {
+            .quote-card, .quote-container, .analysis-section {{
                 padding: 15px !important;
                 margin: 10px 0 !important;
-            }
+            }}
             
-            .character-name {
+            .character-name {{
                 font-size: 20px !important;
-            }
+            }}
             
-            .quote-text {
+            .quote-text {{
                 font-size: 16px !important;
-            }
+            }}
             
-            /* Ajustar botones para que ocupen ancho completo en móvil */
-            .stButton > button {
+            .stButton > button {{
                 width: 100%;
                 margin-bottom: 5px;
-            }
+            }}
             
-            /* Reducir márgenes laterales */
-            .block-container {
+            .block-container {{
                 padding-top: 2rem !important;
                 padding-left: 1rem !important;
                 padding-right: 1rem !important;
-            }
-        }
+            }}
+        }}
         </style>
         """, unsafe_allow_html=True)
     
@@ -221,9 +292,9 @@ class UIComponents:
                 background: linear-gradient(135deg, #FFD700, #FFA500);
                 padding: 25px;
                 border-radius: 15px;
-                border-left: 5px solid #FF6347;
+                border: 3px solid #000;
+                box-shadow: 4px 4px 0px #000; /* Sombra comic */
                 margin: 15px 0;
-                box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
             }
             </style>
             """, unsafe_allow_html=True)
@@ -241,7 +312,7 @@ class UIComponents:
             <div style='text-align: center; font-size: 22px; font-style: italic; 
                         color: #2F4F4F; margin: 20px 0; font-weight: 500; 
                         background: rgba(255,255,255,0.7); padding: 15px; 
-                        border-radius: 10px;'>
+                        border-radius: 10px; border: 2px dashed #000;'>
                 "{quote_data["quote"]}"
             </div>
             """, unsafe_allow_html=True)
@@ -333,7 +404,7 @@ class UIComponents:
             # Contenido del análisis con mejor formato
             if analysis:
                 # Dividir el análisis en párrafos para mejor legibilidad
-                paragraphs = analysis.split('\n\n')
+                paragraphs = analysis.split('\\n\\n')
                 
                 for paragraph in paragraphs:
                     if paragraph.strip():
@@ -362,7 +433,7 @@ class UIComponents:
             return "<p><em>No se pudo generar el análisis.</em></p>"
         
         # Dividir en párrafos
-        paragraphs = analysis.split('\n\n')
+        paragraphs = analysis.split('\\n\\n')
         formatted_paragraphs = []
         
         for paragraph in paragraphs:

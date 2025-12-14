@@ -62,3 +62,71 @@ Se aplicaron técnicas de **Diseño Web Responsivo** mediante CSS.
 
 ## ✅ Conclusión
 El proyecto ha evolucionado de una prueba de concepto fallida por límites de API a una aplicación robusta, resiliente a fallos de terceros y adaptada a múltiples dispositivos, siguiendo estrictamente las directrices indicadas en los prompts del usuario.
+
+---
+
+## 4. Refactorización de Navegación (Tabs vs Sidebar)
+
+### 💬 Prompt / Solicitud del Usuario
+> *"quiero que me ayudes a refactorizar la navegación de la aplicación ya que tenemos mucha información en el sidebar y se está perdiendo la funcionalidad principal..."*
+
+### 🔴 El Problema
+El sidebar estaba saturado de información (estado de API, tecnologías, créditos), distrayendo de la funcionalidad principal: generar frases. La experiencia de usuario era desordenada.
+
+### 🟢 Solución y Justificación
+Se implementó un sistema de **Navegación de Dos Vistas**.
+- **Acción:** Se modificó `app.py` para manejar estados de navegación.
+- **Cambios:**
+  - **Inicio:** Dedicado exclusivamente a la generación de citas y análisis.
+  - **Dashboard:** Nueva vista que agrupa toda la información técnica, métricas y detalles del proyecto.
+- **Justificación:** Limpiar la interfaz principal para focalizar la atención del usuario en el valor central del producto ("Product-Led"), moviendo la información secundaria a un espacio dedicado.
+
+---
+
+## 5. Restauración y Corrección de Lógica Crítica
+
+### 💬 Prompt / Solicitud del Usuario
+> *"ahora tenemos que el inicio está generando este error y no está cargando lo que debería hacer"* (Error: `SpringfieldInsightsApp object has no attribute render_main_button`)
+
+### 🔴 El Problema
+Durante la refactorización de la navegación, se eliminaron accidentalmente métodos core de la clase principal (`_render_main_button`, `_render_quote_section`, `_get_new_quote`), dejando la aplicación incapaz de generar o mostrar contenido.
+
+### 🟢 Solución y Justificación
+- **Acción:** Se restauraron manualmente los métodos perdidos en `app.py`.
+- **Justificación:** Recuperar la funcionalidad operativa básica sin perder la nueva estructura de navegación implementada.
+
+---
+
+## 6. Identidad Visual "Los Simpsons" y UX
+
+### 💬 Prompt / Solicitud del Usuario
+> *"quiero que cambies el color de este boton por un color amarillo similar al header... fuentes, a todos los titulos vamos a ponerle la fuente tipografica de los simpsons"*
+
+### 🔴 El Problema
+La aplicación usaba estilos genéricos de Streamlit (botones rojos, fuentes estándar sans-serif), lo que desconectaba al usuario de la temática de la serie.
+
+### 🟢 Solución y Justificación
+Se aplicó una **Identidad Visual Temática Completa**.
+- **Acción:** Modificación profunda de `ui/components.py`.
+- **Cambios:**
+  - Inyección de Google Fonts: **'Luckiest Guy'** (Títulos) y **'Gloria Hallelujah'** (Texto).
+  - Colores: Amarillo Simpsons (`#FFD700`) y Azul Marge (`#009DD9`).
+  - Estilo "Cómic": Bordes negros gruesos y sombras sólidas.
+  - Reordenamiento del Layout: "Bienvenida -> Instrucciones -> Acción" para mejorar el flujo narrativo.
+
+---
+
+## 7. Modo Oscuro y Experiencia de Lectura
+
+### 💬 Prompt / Solicitud del Usuario
+> *"quiero que me ayudes a implementar un boton para el modo claro y modo oscuro... cuando se activa el modo claro la letra se mantiene de color blanco"*
+
+### 🔴 El Problema
+1. La identidad visual brillante (amarillo puro) cansaba la vista en entornos oscuros.
+2. Un bug de sincronización hacía necesario dar "doble clic" al toggle para aplicar cambios.
+3. El texto era invisible en modo claro debido a malas referencias de variables CSS.
+
+### 🟢 Solución y Justificación
+- **Acción:** Implementación de un **Theme Switcher** robusto en `app.py`.
+- **Lógica:** Se reordenó la ejecución para procesar el Toggle **antes** de cargar el CSS, solucionando el problema del "doble clic".
+- **Variables Dinámicas:** Se actualizó `apply_custom_css` para recibir el estado `dark_mode` y cambiar variables de color (Fondo, Texto, Cards) dinámicamente, asegurando legibilidad perfecta en ambos modos.

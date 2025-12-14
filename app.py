@@ -24,21 +24,32 @@ class SpringfieldInsightsApp:
         
     def run(self):
         """Ejecuta la aplicación principal"""
-        # Configuración de página
+        # 1. Configuración de página
         st.set_page_config(
             page_title="Springfield Insights",
             page_icon="🍩",
             layout="wide"
         )
         
-        # Aplicar estilos
-        self.ui.apply_custom_css()
+        # 2. Inicializar estado de tema y renderizar toggle PRIMERO
+        # Esto asegura que el estado se actualice antes de aplicar CSS
+        if 'dark_mode' not in st.session_state:
+            st.session_state.dark_mode = False
+            
+        with st.sidebar:
+            st.image("https://upload.wikimedia.org/wikipedia/commons/9/98/The_Simpsons_yellow_logo.svg", width=200)
+            st.markdown("### ⚙️ Configuración")
+            st.session_state.dark_mode = st.toggle("🌙 Modo Oscuro", value=st.session_state.dark_mode)
+            st.markdown("---")
         
-        # Verificar configuración
+        # 3. Aplicar estilos con el estado ACTUALIZADO
+        self.ui.apply_custom_css(dark_mode=st.session_state.dark_mode)
+        
+        # 4. Verificar configuración de API
         if not self._check_configuration():
             return
         
-        # Renderizar interfaz
+        # 5. Renderizar resto de la interfaz (incluyendo resto de sidebar)
         self._render_main_interface()
     
     def _check_configuration(self) -> bool:
@@ -50,26 +61,139 @@ class SpringfieldInsightsApp:
         return True
     
     def _render_main_interface(self):
-        """Renderiza la interfaz principal"""
-        # Header
-        self.ui.render_header()
+        """Renderiza la interfaz principal basada en la navegación"""
+        # Menú de Navegación en Sidebar (El toggle ya se renderizó arriba)
+        page = self._render_sidebar_menu()
         
-        # Inicializar estado
-        if 'current_quote_index' not in st.session_state:
-            st.session_state.current_quote_index = None
-        
-        # Botón principal
-        self._render_main_button()
-        
-        # Mostrar cita si existe
-        if st.session_state.current_quote_index is not None:
-            self._render_quote_section()
-        else:
-            self._render_welcome_message()
-        
-        # Sidebar
-        self._render_sidebar()
+        # Renderizar vista seleccionada
+        if page == "Inicio":
+            self.ui.render_header()
+            
+            # Inicializar estado
+            if 'current_quote_index' not in st.session_state:
+                st.session_state.current_quote_index = None
+            
+            # Mostrar cita si existe
+            if st.session_state.current_quote_index is not None:
+                self._render_quote_section()
+            else:
+                self._render_welcome_message()
+                
+        elif page == "Dashboard":
+            self._render_dashboard_view()
     
+    def _render_sidebar_menu(self) -> str:
+        """Renderiza el menú de navegación y retorna la página seleccionada"""
+        with st.sidebar:
+            # El logo y toggle ya se renderizaron en run(), seguimos con el menú
+            
+            st.markdown("### 🧭 Navegación")
+            
+            # Navegación mejorada con st.radio u otro componente
+            page = st.radio(
+                "Ir a:",
+                ["Inicio", "Dashboard"],
+                index=0,
+                format_func=lambda x: "🏠 Inicio" if x == "Inicio" else "📊 Dashboard"
+            )
+            
+            st.markdown("---")
+            st.caption("Springfield Insights v1.1")
+            
+            return page
+
+    def _render_dashboard_view(self):
+        """Renderiza la vista del Dashboard (Info que antes estaba en sidebar)"""
+        st.title("📊 Panel de Control")
+        st.markdown("---")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Estado de conexión con diseño mejorado
+            api_status = quotes_manager.get_api_status()
+            
+            st.markdown("### 🌐 Estado de Conexión")
+            if api_status.get('available'):
+                st.success("🟢 **API Oficial Conectada**")
+                st.caption("Obteniendo frases reales de Los Simpsons")
+            else:
+                st.warning("🟡 **Modo Local Activo**")
+                st.caption("Usando base de datos local de respaldo")
+                
+            # GPT-4 Status
+            st.markdown("### 🤖 Inteligencia Artificial")
+            st.success("✅ GPT-3.5-Turbo Operativo (Modo Demo Activo)")
+
+        with col2:
+            # Estadísticas con mejor formato
+            st.markdown("### 📈 Estadísticas de Sesión")
+            
+            metric_col1, metric_col2 = st.columns(2)
+            with metric_col1:
+                if 'analyses_generated' not in st.session_state:
+                    st.session_state.analyses_generated = 0
+                st.metric(
+                    label="Análisis Generados",
+                    value=st.session_state.analyses_generated
+                )
+            
+            with metric_col2:
+                st.metric(
+                    label="Frases Locales",
+                    value=len(SIMPSONS_QUOTES)
+                )
+
+        st.markdown("---")
+        
+        # Performance Status
+        st.info("⚡ **Rendimiento:** CDN Optimizado y caché de respuestas activado.")
+
+        # Información del proyecto con mejor diseño
+        st.markdown("### 🎯 Sobre el Proyecto")
+        
+        tab1, tab2, tab3 = st.tabs(["📖 Qué es", "⚙️ Tecnologías", "🎓 Valor Académico"])
+        
+        with tab1:
+            st.markdown("""
+            ### Springfield Insights
+            Una aplicación académica que utiliza **inteligencia artificial** 
+            para explorar la profundidad filosófica presente en Los Simpsons.
+            
+            - 🧠 **Análisis con IA**  
+            - 🎭 **Frases auténticas**  
+            - 🏛️ **Enfoque académico**  
+            - 🔄 **Sistema híbrido**
+            """)
+        
+        with tab2:
+            st.markdown("""
+            **🤖 Inteligencia Artificial:**
+            - OpenAI GPT-3.5-Turbo para análisis filosófico (con Mock Fallback)
+            
+            **🌐 Fuentes de Datos:**
+            - API oficial de Los Simpsons (`thesimpsonsapi.com`)
+            - CDN optimizado para imágenes
+            
+            **💻 Tecnologías Web:**
+            - Python + Streamlit
+            - Sistema híbrido API + Local
+            - Diseño Responsive
+            """)
+        
+        with tab3:
+            st.markdown("""
+            **📚 Objetivos Educativos:**
+            - Análisis cultural mediante IA
+            - Crítica social contemporánea
+            - Filosofía en cultura popular
+            
+            **🏆 Características Académicas:**
+            - Rigor metodológico
+            - Fuentes auténticas
+            - Análisis contextualizado
+            """)
+
     def _render_main_button(self):
         """Renderiza el botón principal"""
         col1, col2, col3 = st.columns([1, 2, 1])
@@ -123,7 +247,7 @@ class SpringfieldInsightsApp:
         """Renderiza la sección de análisis filosófico"""
         st.markdown("### 📚 Análisis Filosófico")
         
-        with st.spinner("🧠 Generando análisis académico con GPT-4..."):
+        with st.spinner("🧠 Generando análisis académico con GPT-3.5..."):
             analysis = self.quote_service.generate_analysis(
                 quote_data["quote"],
                 quote_data["character"],
@@ -156,7 +280,7 @@ class SpringfieldInsightsApp:
     def _render_welcome_message(self):
         """Renderiza el mensaje de bienvenida mejorado"""
         
-        # Mensaje principal con mejor diseño
+        # 1. Seccion: Header / Mensaje principal
         st.markdown("""
         <div style='background: linear-gradient(135deg, #E6F3FF, #F0F8FF); padding: 30px; border-radius: 15px; border-left: 5px solid #4169E1; margin: 20px 0;'>
             <h2 style='color: #2F4F4F; text-align: center; margin-bottom: 20px;'>
@@ -169,34 +293,7 @@ class SpringfieldInsightsApp:
         </div>
         """, unsafe_allow_html=True)
         
-        # Características en columnas
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.markdown("""
-            <div style='text-align: center; padding: 20px; background: #FFF8DC; border-radius: 10px; margin: 10px 0;'>
-                <h3 style='color: #FF6347;'>🎯 Frases Auténticas</h3>
-                <p style='color: #2F4F4F;'>Directamente de la API oficial de Los Simpsons</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("""
-            <div style='text-align: center; padding: 20px; background: #F0F8FF; border-radius: 10px; margin: 10px 0;'>
-                <h3 style='color: #4169E1;'>🧠 Análisis GPT-4</h3>
-                <p style='color: #2F4F4F;'>Interpretación filosófica profunda y académica</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col3:
-            st.markdown("""
-            <div style='text-align: center; padding: 20px; background: #F5FFFA; border-radius: 10px; margin: 10px 0;'>
-                <h3 style='color: #228B22;'>🏛️ Rigor Académico</h3>
-                <p style='color: #2F4F4F;'>Crítica social y contexto filosófico</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Instrucciones de uso
+        # 2. Seccion: ¿Cómo empezar?
         st.markdown("### 🚀 ¿Cómo empezar?")
         
         st.markdown("""
@@ -205,13 +302,18 @@ class SpringfieldInsightsApp:
                 <li><strong>Haz clic</strong> en el botón amarillo <em>"🎲 Obtener Nueva Reflexión Filosófica"</em></li>
                 <li><strong>Observa</strong> la imagen oficial del personaje desde el CDN</li>
                 <li><strong>Lee</strong> la frase auténtica de Los Simpsons</li>
-                <li><strong>Explora</strong> el análisis filosófico generado por GPT-4</li>
+                <li><strong>Explora</strong> el análisis filosófico generado por IA</li>
                 <li><strong>Interactúa</strong> con los botones para copiar, guardar o compartir</li>
             </ol>
         </div>
         """, unsafe_allow_html=True)
+
+        # 3. Seccion: Botón de Acción
+        st.markdown("---")
+        self._render_main_button()
+        st.markdown("---")
         
-        # Datos curiosos
+        # 4. Seccion: ¿Sabías que?
         st.markdown("### 📊 ¿Sabías que...?")
         
         col1, col2 = st.columns(2)
@@ -225,130 +327,37 @@ class SpringfieldInsightsApp:
         
         with col2:
             st.info("""
-            **🤖 GPT-4** puede identificar referencias filosóficas, críticas sociales 
+            **🤖 GPT-3.5** puede identificar referencias filosóficas, críticas sociales 
             y contextos culturales que a menudo pasan desapercibidos en una 
             primera lectura de las citas.
             """)
-    
-    def _render_sidebar(self):
-        """Renderiza la barra lateral mejorada y amigable"""
-        with st.sidebar:
-            # Logo y título del sidebar
+            
+        st.markdown("---")
+        
+        # 5. Seccion: Cards (Características) - Ahora al final
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
             st.markdown("""
-            <div style='text-align: center; padding: 10px; background: linear-gradient(135deg, #FFD700, #FFA500); border-radius: 10px; margin-bottom: 20px;'>
-                <h2 style='color: #2F4F4F; margin: 0;'>🍩 Springfield</h2>
-                <p style='color: #2F4F4F; margin: 0; font-size: 14px;'>Panel de Control</p>
+            <div style='text-align: center; padding: 20px; background: #FFF8DC; border-radius: 10px; margin: 10px 0;'>
+                <h3 style='color: #FF6347;'>🎯 Frases Auténticas</h3>
+                <p style='color: #2F4F4F;'>Directamente de la API oficial de Los Simpsons</p>
             </div>
             """, unsafe_allow_html=True)
-            
-            # Estado de conexión con diseño mejorado
-            api_status = quotes_manager.get_api_status()
-            
-            st.markdown("### 🌐 Estado de Conexión")
-            if api_status.get('available'):
-                st.success("🟢 **API Oficial Conectada**")
-                st.caption("Obteniendo frases reales de Los Simpsons")
-            else:
-                st.warning("🟡 **Modo Local Activo**")
-                st.caption("Usando base de datos local de respaldo")
-            
-            # Estadísticas con mejor formato
-            st.markdown("### 📊 Estadísticas de Sesión")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                if 'analyses_generated' not in st.session_state:
-                    st.session_state.analyses_generated = 0
-                st.metric(
-                    label="Análisis",
-                    value=st.session_state.analyses_generated,
-                    delta="GPT-4"
-                )
-            
-            with col2:
-                st.metric(
-                    label="Frases",
-                    value=len(SIMPSONS_QUOTES),
-                    delta="Locales"
-                )
-            
-            # Información del proyecto con mejor diseño
-            st.markdown("### 🎯 Sobre el Proyecto")
-            
-            with st.expander("📖 ¿Qué es Springfield Insights?", expanded=False):
-                st.markdown("""
-                Una aplicación académica que utiliza **inteligencia artificial** 
-                para explorar la profundidad filosófica presente en Los Simpsons.
-                
-                🧠 **Análisis con GPT-4**  
-                🎭 **Frases auténticas**  
-                🏛️ **Enfoque académico**  
-                🔄 **Sistema híbrido**
-                """)
-            
-            with st.expander("⚙️ Tecnologías Utilizadas", expanded=False):
-                st.markdown("""
-                **🤖 Inteligencia Artificial:**
-                - OpenAI GPT-4 para análisis filosófico
-                
-                **🌐 Fuentes de Datos:**
-                - API oficial de Los Simpsons
-                - CDN optimizado para imágenes
-                
-                **💻 Tecnologías Web:**
-                - Python + Streamlit
-                - Sistema híbrido API + Local
-                """)
-            
-            with st.expander("🎓 Valor Académico", expanded=False):
-                st.markdown("""
-                **📚 Objetivos Educativos:**
-                - Análisis cultural mediante IA
-                - Crítica social contemporánea
-                - Filosofía en cultura popular
-                
-                **🏆 Características Académicas:**
-                - Rigor metodológico
-                - Fuentes auténticas
-                - Análisis contextualizado
-                """)
-            
-            # Sección de ayuda
-            st.markdown("### 💡 Cómo Usar")
-            st.info("""
-            **1.** Haz clic en **"Obtener Nueva Reflexión"**
-            
-            **2.** Lee la cita del personaje
-            
-            **3.** Explora el **análisis filosófico** generado por GPT-4
-            
-            **4.** Usa los botones para **copiar**, **guardar** o **compartir**
-            """)
-            
-            # Estado del sistema con iconos
-            st.markdown("### 🔧 Estado del Sistema")
-            
-            # GPT-4 Status
-            st.markdown("**🤖 Inteligencia Artificial:**")
-            st.success("✅ GPT-4 Operativo")
-            
-            # API Status
-            st.markdown("**🌐 Fuente de Datos:**")
-            if api_status.get('available'):
-                st.success("✅ API Oficial Conectada")
-            else:
-                st.info("🔄 Modo Local Activo")
-            
-            # Performance Status
-            st.markdown("**⚡ Rendimiento:**")
-            st.success("✅ CDN Optimizado")
-            
-            # Footer del sidebar
-            st.markdown("---")
+        
+        with col2:
             st.markdown("""
-            <div style='text-align: center; color: #666; font-size: 12px;'>
-                <p>🍩 Springfield Insights v1.0</p>
-                <p>Filosofía + IA + Los Simpsons</p>
+            <div style='text-align: center; padding: 20px; background: #F0F8FF; border-radius: 10px; margin: 10px 0;'>
+                <h3 style='color: #4169E1;'>🧠 Análisis GPT-3.5</h3>
+                <p style='color: #2F4F4F;'>Interpretación filosófica profunda y académica</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown("""
+            <div style='text-align: center; padding: 20px; background: #F5FFFA; border-radius: 10px; margin: 10px 0;'>
+                <h3 style='color: #228B22;'>🏛️ Rigor Académico</h3>
+                <p style='color: #2F4F4F;'>Crítica social y contexto filosófico</p>
             </div>
             """, unsafe_allow_html=True)
 
