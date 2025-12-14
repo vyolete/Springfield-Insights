@@ -43,6 +43,29 @@ class UIComponents:
             border-radius: 10px;
             margin-bottom: 20px;
         }
+        
+        /* Optimización de imágenes */
+        .stImage > img {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .stImage > img:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Loading placeholder */
+        .image-loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
         </style>
         """, unsafe_allow_html=True)
     
@@ -56,21 +79,58 @@ class UIComponents:
         """, unsafe_allow_html=True)
     
     def render_character_image(self, quote_data):
-        """Renderiza la imagen del personaje"""
+        """
+        Renderiza la imagen del personaje con lazy loading y optimización CDN
+        """
+        character_name = quote_data.get("character", "Personaje Desconocido")
+        image_url = quote_data.get("image", "")
+        
+        # Información adicional del personaje si está disponible
+        character_info = quote_data.get("character_info", {})
+        
         try:
+            # Usar imagen optimizada del CDN
             st.image(
-                quote_data["image"], 
-                caption=quote_data["character"],
+                image_url, 
+                caption=self._build_image_caption(character_name, character_info),
                 width='stretch'
             )
-        except:
-            # Fallback a placeholder
-            placeholder_img = self._get_placeholder_image(quote_data["character"])
+            
+            # Mostrar fuente de datos si está disponible
+            if quote_data.get("source") == "api":
+                st.caption("📡 Imagen oficial desde CDN de Los Simpsons")
+            
+        except Exception as e:
+            # Fallback a placeholder con información del error
+            placeholder_img = self._get_placeholder_image(character_name)
             st.image(
                 placeholder_img,
-                caption=quote_data["character"],
+                caption=f"{character_name} (imagen no disponible)",
                 width='stretch'
             )
+            st.caption("⚠️ Usando imagen placeholder")
+    
+    def _build_image_caption(self, character_name: str, character_info: dict) -> str:
+        """
+        Construye caption informativo para la imagen del personaje
+        
+        Args:
+            character_name: Nombre del personaje
+            character_info: Información adicional del personaje
+            
+        Returns:
+            Caption formateado con información del personaje
+        """
+        caption_parts = [character_name]
+        
+        # Añadir información adicional si está disponible
+        if character_info.get('occupation') and character_info['occupation'] != 'Unknown':
+            caption_parts.append(f"({character_info['occupation']})")
+        
+        if character_info.get('age'):
+            caption_parts.append(f"- {character_info['age']} años")
+        
+        return " ".join(caption_parts)
     
     def render_quote_card(self, quote_data):
         """Renderiza la tarjeta de la cita"""

@@ -78,8 +78,8 @@ class SimpsonsAPIService:
                 # Generar contexto basado en la descripción del personaje
                 context = self._generate_context(character_data, phrase)
                 
-                # Construir URL de imagen
-                image_url = self._build_image_url(character_data.get('portrait_path', ''))
+                # Construir URL de imagen optimizada para perfil (500px es ideal)
+                image_url = self._build_image_url(character_data.get('portrait_path', ''), size="500")
                 
                 return {
                     'quote': phrase,
@@ -134,20 +134,48 @@ class SimpsonsAPIService:
         else:
             return 'Reflexión filosófica desde la experiencia de Springfield'
     
-    def _build_image_url(self, portrait_path: str) -> str:
+    def _build_image_url(self, portrait_path: str, size: str = "500") -> str:
         """
-        Construye la URL completa de la imagen del personaje
+        Construye la URL de imagen usando el CDN oficial de Los Simpsons
+        
+        Args:
+            portrait_path: Ruta relativa de la imagen (ej: "/character/1.webp")
+            size: Tamaño de imagen del CDN (200, 500, 1280)
+            
+        Returns:
+            URL completa de la imagen desde el CDN optimizado
+        """
+        if portrait_path:
+            # Usar CDN oficial para máximo rendimiento
+            # Formato: https://cdn.thesimpsonsapi.com/{size}{image_path}
+            return f"https://cdn.thesimpsonsapi.com/{size}{portrait_path}"
+        else:
+            # Fallback a placeholder con estilo Simpsons
+            return "https://via.placeholder.com/300x200/FFD700/2F4F4F?text=Simpson+Character"
+    
+    def get_character_image_urls(self, portrait_path: str) -> Dict[str, str]:
+        """
+        Obtiene URLs de imagen en diferentes tamaños desde el CDN
         
         Args:
             portrait_path: Ruta relativa de la imagen
             
         Returns:
-            URL completa de la imagen
+            Dict con URLs para diferentes tamaños
         """
-        if portrait_path:
-            return f"https://thesimpsonsapi.com{portrait_path}"
-        else:
-            return "https://via.placeholder.com/300x200/FFD700/2F4F4F?text=Simpson+Character"
+        if not portrait_path:
+            placeholder = "https://via.placeholder.com/300x200/FFD700/2F4F4F?text=Simpson+Character"
+            return {
+                'thumbnail': placeholder,
+                'medium': placeholder,
+                'large': placeholder
+            }
+        
+        return {
+            'thumbnail': f"https://cdn.thesimpsonsapi.com/200{portrait_path}",  # Para listas
+            'medium': f"https://cdn.thesimpsonsapi.com/500{portrait_path}",     # Para perfiles
+            'large': f"https://cdn.thesimpsonsapi.com/1280{portrait_path}"      # Para detalles
+        }
     
     def get_api_status(self) -> Dict[str, bool]:
         """

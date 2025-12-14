@@ -33,6 +33,7 @@ python run.py
 ## 🎯 Características
 
 - ✅ **API real de Los Simpsons** conectada a https://thesimpsonsapi.com
+- ✅ **CDN optimizado** para imágenes de alta calidad y carga rápida
 - ✅ **Frases auténticas** directamente de la base de datos oficial
 - ✅ **Sistema híbrido** API + fallback local para máxima confiabilidad
 - ✅ **Análisis filosófico** generado por GPT-4
