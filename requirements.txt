@@ -1,6 +1,4 @@
-# ========================================
-# DEPENDENCIAS CORE (REQUERIDAS)
-# ========================================
+# Springfield Insights - Dependencias Core
 
 # Framework de interfaz web
 streamlit>=1.28.0
@@ -8,52 +6,5 @@ streamlit>=1.28.0
 # Cliente OpenAI para GPT-4
 openai>=1.0.0
 
-# HTTP requests para APIs externas
-requests>=2.31.0
-
 # Gestión de variables de entorno
 python-dotenv>=1.0.0
-
-# ========================================
-# DEPENDENCIAS DE ANÁLISIS Y VISUALIZACIÓN
-# ========================================
-
-# Análisis de datos
-pandas>=2.0.0
-
-# Visualización interactiva
-plotly>=5.15.0
-
-# Gráficos estáticos (opcional)
-matplotlib>=3.7.0
-
-# ========================================
-# DEPENDENCIAS DE DESARROLLO Y TESTING
-# ========================================
-
-# Testing framework
-pytest>=7.4.0
-
-# Validación de datos
-pydantic>=2.0.0
-
-# Monitoreo de sistema
-psutil>=5.9.0
-
-# ========================================
-# DEPENDENCIAS DE SISTEMA (OPCIONALES)
-# ========================================
-
-# Mejor manejo de JSON
-ujson>=5.8.0
-
-# Aceleración de requests
-httpx>=0.24.0
-
-# ========================================
-# NOTAS DE COMPATIBILIDAD
-# ========================================
-# Python 3.10+ requerido
-# Streamlit requiere Python 3.8+
-# OpenAI client requiere Python 3.7.1+
-# Todas las dependencias son compatibles con Python 3.10+

@@ -125,36 +125,12 @@ class SimpsonsTheme:
             font-size: 1.1rem;
             padding: 0.5rem 2rem;
             transition: all 0.3s ease;
-            min-height: 3rem;
         }}
         
         .stButton > button:hover {{
             background: linear-gradient(90deg, {cls.COLORS['accent_orange']}, {cls.COLORS['primary_yellow']});
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }}
-        
-        .stButton > button:disabled {{
-            background: #cccccc;
-            color: #666666;
-            border-color: #999999;
-            transform: none;
-            box-shadow: none;
-            cursor: not-allowed;
-        }}
-        
-        /* Botón principal destacado */
-        .stButton > button[kind="primary"] {{
-            background: linear-gradient(135deg, {cls.COLORS['primary_yellow']}, {cls.COLORS['accent_orange']});
-            font-size: 1.3rem;
-            padding: 1rem 2rem;
-            min-height: 4rem;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }}
-        
-        .stButton > button[kind="primary"]:hover {{
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.25);
         }}
         
         /* Sidebar */
@@ -195,50 +171,6 @@ class SimpsonsTheme:
             margin-top: 1rem;
         }}
         
-        /* Imágenes optimizadas */
-        .character-image {{
-            border-radius: 15px;
-            border: 3px solid {cls.COLORS['secondary_blue']};
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease;
-        }}
-        
-        .character-image:hover {{
-            transform: scale(1.05);
-        }}
-        
-        /* Estados de carga mejorados */
-        .stSpinner > div {{
-            border-color: {cls.COLORS['primary_yellow']} transparent {cls.COLORS['primary_yellow']} transparent;
-        }}
-        
-        /* Toasts personalizados */
-        .stToast {{
-            background: linear-gradient(90deg, {cls.COLORS['primary_yellow']}, {cls.COLORS['accent_orange']});
-            color: {cls.COLORS['text_dark']};
-            border-radius: 10px;
-            font-family: {cls.FONTS['secondary']};
-        }}
-        
-        /* Métricas mejoradas */
-        .metric-container {{
-            background: white;
-            border: 2px solid {cls.COLORS['primary_yellow']};
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }}
-        
-        /* Separadores temáticos */
-        .section-divider {{
-            border: none;
-            height: 3px;
-            background: linear-gradient(90deg, {cls.COLORS['primary_yellow']}, {cls.COLORS['accent_orange']});
-            border-radius: 2px;
-            margin: 2rem 0;
-        }}
-        
         /* Responsive design */
         @media (max-width: 768px) {{
             .main-header h1 {{
@@ -252,25 +184,6 @@ class SimpsonsTheme:
             .quote-card {{
                 padding: 1rem;
             }}
-            
-            .stButton > button {{
-                font-size: 1rem;
-                padding: 0.75rem 1.5rem;
-            }}
-        }}
-        
-        /* Animaciones sutiles */
-        @keyframes fadeIn {{
-            from {{ opacity: 0; transform: translateY(20px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
-        }}
-        
-        .quote-card {{
-            animation: fadeIn 0.5s ease-out;
-        }}
-        
-        .analysis-section {{
-            animation: fadeIn 0.7s ease-out;
         }}
         </style>
         """
