@@ -99,6 +99,46 @@ class UIComponents:
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin: 10px 0;
         }
+
+        /* DISEÑO RESPONSIVE (MEDIA QUERIES) */
+        @media (max-width: 768px) {
+            /* Ajustes para móviles */
+            .main-header {
+                padding: 10px;
+            }
+            .main-header h1 {
+                font-size: 1.8rem !important;
+            }
+            .main-header h3 {
+                font-size: 1rem !important;
+            }
+            
+            .quote-card, .quote-container, .analysis-section {
+                padding: 15px !important;
+                margin: 10px 0 !important;
+            }
+            
+            .character-name {
+                font-size: 20px !important;
+            }
+            
+            .quote-text {
+                font-size: 16px !important;
+            }
+            
+            /* Ajustar botones para que ocupen ancho completo en móvil */
+            .stButton > button {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            /* Reducir márgenes laterales */
+            .block-container {
+                padding-top: 2rem !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+        }
         </style>
         """, unsafe_allow_html=True)
     
