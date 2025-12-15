@@ -176,16 +176,61 @@ streamlit run app_final.py
 - 🔗 Compartir en redes sociales
 - 📱 Optimización móvil avanzada
 
+## 📚 Documentación
+
+### 📖 Guías Disponibles
+- **[🚀 Guía de Deploy](DEPLOY_GUIDE.md)** - Instrucciones paso a paso para Streamlit Cloud
+- **[🤝 Guía de Contribución](CONTRIBUTING.md)** - Cómo contribuir al proyecto
+- **[📋 Plantillas de Issues](.github/ISSUE_TEMPLATE/)** - Templates para reportar bugs y solicitar features
+
+### 🔗 Enlaces Útiles
+- **[📊 Dashboard de Issues](https://github.com/vyolete/Springfield-Insights/issues)** - Bugs y feature requests
+- **[🔄 Pull Requests](https://github.com/vyolete/Springfield-Insights/pulls)** - Contribuciones en progreso
+- **[📈 Releases](https://github.com/vyolete/Springfield-Insights/releases)** - Historial de versiones
+
+## 🐛 Reportar Problemas
+
+### 🚨 ¿Encontraste un Bug?
+1. **[🐛 Reportar Bug](https://github.com/vyolete/Springfield-Insights/issues/new?template=bug_report.md)**
+2. **[✨ Solicitar Feature](https://github.com/vyolete/Springfield-Insights/issues/new?template=feature_request.md)**
+3. **[💬 Discusión General](https://github.com/vyolete/Springfield-Insights/discussions)**
+
+### 🔍 Antes de Reportar
+- [ ] Revisa los [issues existentes](https://github.com/vyolete/Springfield-Insights/issues)
+- [ ] Prueba en la [versión más reciente](https://springfield-insights-unir.streamlit.app/)
+- [ ] Incluye información detallada del entorno
+
 ## 📄 Licencia
 
-Este proyecto está bajo la **Licencia MIT** - ver [LICENSE](LICENSE) para detalles.
+Este proyecto está bajo la **Licencia MIT** - ver [LICENSE](LICENSE) para detalles completos.
+
+### 📋 Resumen de la Licencia
+- ✅ **Uso comercial** permitido
+- ✅ **Modificación** permitida  
+- ✅ **Distribución** permitida
+- ✅ **Uso privado** permitido
+- ❌ **Sin garantía** incluida
+- ⚠️ **Incluir licencia** en distribuciones
 
 ---
 
 <div align="center">
 
-**[🚀 Probar la App](https://your-app-name.streamlit.app)** | **[📖 Documentación](https://github.com/tu-usuario/springfield-insights/wiki)** | **[🐛 Reportar Bug](https://github.com/tu-usuario/springfield-insights/issues)**
+### 🔗 Enlaces Rápidos
 
-Hecho con ❤️ y 🤖 para explorar la sabiduría de Springfield
+**[🚀 Probar la App](https://springfield-insights-unir.streamlit.app/)** • **[📖 Documentación](CONTRIBUTING.md)** • **[🐛 Reportar Bug](https://github.com/vyolete/Springfield-Insights/issues/new?template=bug_report.md)** • **[✨ Solicitar Feature](https://github.com/vyolete/Springfield-Insights/issues/new?template=feature_request.md)**
+
+### 👥 Comunidad
+
+[![GitHub Issues](https://img.shields.io/github/issues/vyolete/Springfield-Insights)](https://github.com/vyolete/Springfield-Insights/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/vyolete/Springfield-Insights)](https://github.com/vyolete/Springfield-Insights/pulls)
+[![GitHub Stars](https://img.shields.io/github/stars/vyolete/Springfield-Insights)](https://github.com/vyolete/Springfield-Insights/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/vyolete/Springfield-Insights)](https://github.com/vyolete/Springfield-Insights/network)
+
+---
+
+**Hecho con ❤️ y 🤖 para explorar la sabiduría de Springfield**
+
+*Springfield Insights - Demostrando que la filosofía puede encontrarse en los lugares más inesperados* 🍩
 
 </div>
