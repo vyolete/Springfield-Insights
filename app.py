@@ -55,8 +55,17 @@ class SpringfieldInsightsApp:
     def _check_configuration(self) -> bool:
         """Verifica la configuración de OpenAI"""
         if not settings.OPENAI_API_KEY:
-            st.error("❌ Configura tu OPENAI_API_KEY en el archivo .env")
-            st.info("💡 Copia .env.example a .env y añade tu clave de OpenAI")
+            st.error("❌ **Configuración de API Key requerida**")
+            st.markdown("""
+            **Para Streamlit Cloud:**
+            1. Ve a tu app en Streamlit Cloud
+            2. Haz clic en "Settings" → "Secrets"
+            3. Añade: `OPENAI_API_KEY = "tu-api-key"`
+            
+            **Para desarrollo local:**
+            1. Copia `.env.example` a `.env`
+            2. Añade tu `OPENAI_API_KEY=tu-api-key`
+            """)
             return False
         return True
     
