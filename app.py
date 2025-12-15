@@ -76,7 +76,7 @@ class SpringfieldInsightsApp:
         
         with col2:
             if st.button("🎲 Obtener Nueva Reflexión Filosófica", 
-                        use_container_width=True, type="primary"):
+                        type="primary"):
                 self._get_new_quote()
     
     def _get_new_quote(self):
@@ -102,6 +102,10 @@ class SpringfieldInsightsApp:
         else:
             quote_data = SIMPSONS_QUOTES[st.session_state.current_quote_index]
         
+        # Debug: Mostrar información de la cita para diagnóstico
+        if st.checkbox("🔍 Mostrar datos de debug", value=False):
+            st.json(quote_data)
+        
         # Layout principal
         col_img, col_content = st.columns([1, 2])
         
@@ -111,6 +115,7 @@ class SpringfieldInsightsApp:
         
         # Contenido de la cita
         with col_content:
+            # Usar el diseño visual completo de Los Simpsons
             self.ui.render_quote_card(quote_data)
         
         # Análisis filosófico
@@ -118,6 +123,49 @@ class SpringfieldInsightsApp:
         
         # Botones de acción
         self._render_action_buttons()
+    
+    def _render_quote_native(self, quote_data):
+        """Renderiza la cita usando componentes nativos de Streamlit"""
+        
+        # Información de la fuente
+        source_info = "🌐 API Oficial" if quote_data.get("source") == "api" else "📚 Base Local"
+        
+        # Header con personaje y fuente
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            st.markdown(f"### 🎭 {quote_data.get('character', 'Personaje Desconocido')}")
+        with col2:
+            st.caption(source_info)
+        
+        # La cita principal
+        st.markdown("---")
+        quote_text = quote_data.get("quote", "Cita no disponible")
+        st.markdown(f'> **"{quote_text}"**')
+        st.markdown("---")
+        
+        # Contexto filosófico
+        st.markdown("#### 💭 Contexto Filosófico")
+        context_text = quote_data.get("context", "Contexto no disponible")
+        st.write(context_text)
+        
+        # Información adicional del personaje si está disponible
+        character_info = quote_data.get("character_info", {})
+        if character_info:
+            st.markdown("#### ℹ️ Información del Personaje")
+            
+            info_cols = st.columns(3)
+            
+            if character_info.get('occupation') and character_info['occupation'] != 'Unknown':
+                with info_cols[0]:
+                    st.metric("Ocupación", character_info['occupation'])
+            
+            if character_info.get('age'):
+                with info_cols[1]:
+                    st.metric("Edad", f"{character_info['age']} años")
+            
+            if character_info.get('status') and character_info['status'] != 'Unknown':
+                with info_cols[2]:
+                    st.metric("Estado", character_info['status'])
     
     def _render_analysis_section(self, quote_data):
         """Renderiza la sección de análisis filosófico"""
