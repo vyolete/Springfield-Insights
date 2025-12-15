@@ -184,7 +184,7 @@ Este proyecto está bajo la **Licencia MIT** - ver [LICENSE](LICENSE) para detal
 
 <div align="center">
 
-**[🚀 Probar la App](https://your-app-name.streamlit.app)** | **[📖 Documentación](https://github.com/tu-usuario/springfield-insights/wiki)** | **[🐛 Reportar Bug](https://github.com/tu-usuario/springfield-insights/issues)**
+**[🚀 Probar la App](https://springfield-insights-unir.streamlit.app/)** | **[📖 Documentación](https://github.com/tu-usuario/springfield-insights/wiki)** | **[🐛 Reportar Bug](https://github.com/tu-usuario/springfield-insights/issues)**
 
 Hecho con ❤️ y 🤖 para explorar la sabiduría de Springfield
 
