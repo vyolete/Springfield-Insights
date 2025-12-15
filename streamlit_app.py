@@ -6,12 +6,15 @@ Aplicación optimizada para deploy en Streamlit Cloud con GitHub
 import streamlit as st
 from openai import OpenAI
 import os
-from dotenv import load_dotenv
 import random
 
 # Cargar variables de entorno solo si existe el archivo (desarrollo local)
-if os.path.exists('.env'):
-    load_dotenv()
+try:
+    from dotenv import load_dotenv
+    if os.path.exists('.env'):
+        load_dotenv()
+except ImportError:
+    pass  # dotenv no disponible en Streamlit Cloud
 
 # Configuración de página
 st.set_page_config(
