@@ -10,17 +10,28 @@ from pathlib import Path
 # Configurar path para imports
 sys.path.append(str(Path(__file__).parent))
 
-from config.settings import settings
-from services.quote_service import QuoteService
-from ui.components import UIComponents
-from data.quotes_data import quotes_manager, SIMPSONS_QUOTES
+# Imports con manejo de errores para Streamlit Cloud
+try:
+    from config.settings import settings
+    from services.quote_service import QuoteService
+    from ui.components import UIComponents
+    from data.quotes_data import quotes_manager, SIMPSONS_QUOTES
+    IMPORTS_OK = True
+except ImportError as e:
+    st.error(f"❌ Error importando módulos: {e}")
+    st.info("🔧 Usando modo de emergencia...")
+    IMPORTS_OK = False
 
 class SpringfieldInsightsApp:
     """Aplicación principal de Springfield Insights"""
     
     def __init__(self):
-        self.quote_service = QuoteService()
-        self.ui = UIComponents()
+        if IMPORTS_OK:
+            self.quote_service = QuoteService()
+            self.ui = UIComponents()
+        else:
+            self.quote_service = None
+            self.ui = None
         
     def run(self):
         """Ejecuta la aplicación principal"""
@@ -30,6 +41,11 @@ class SpringfieldInsightsApp:
             page_icon="🍩",
             layout="wide"
         )
+        
+        # Modo de emergencia si hay problemas con imports
+        if not IMPORTS_OK:
+            self._run_emergency_mode()
+            return
         
         # 2. Inicializar estado de tema y renderizar toggle PRIMERO
         # Esto asegura que el estado se actualice antes de aplicar CSS
@@ -369,6 +385,89 @@ class SpringfieldInsightsApp:
                 <p style='color: #2F4F4F;'>Crítica social y contexto filosófico</p>
             </div>
             """, unsafe_allow_html=True)
+
+    def _run_emergency_mode(self):
+        """Modo de emergencia con funcionalidad básica"""
+        import os
+        from openai import OpenAI
+        import random
+        
+        st.title("🍩 Springfield Insights")
+        st.markdown("### *Modo de Emergencia - Funcionalidad Básica*")
+        st.warning("⚠️ Ejecutándose en modo simplificado")
+        
+        # Verificar API Key
+        try:
+            api_key = st.secrets["OPENAI_API_KEY"]
+        except (KeyError, FileNotFoundError):
+            api_key = os.getenv("OPENAI_API_KEY")
+        
+        if not api_key:
+            st.error("❌ **Configuración de API Key requerida**")
+            st.markdown("""
+            **Para Streamlit Cloud:**
+            1. Ve a Settings → Secrets en tu app
+            2. Añade: `OPENAI_API_KEY = "tu-api-key"`
+            """)
+            return
+        
+        # Cliente OpenAI
+        try:
+            client = OpenAI(api_key=api_key)
+            st.success("✅ Conectado a OpenAI")
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+            return
+        
+        # Personajes simples
+        personajes = [
+            "Homer Simpson - Padre de familia optimista",
+            "Lisa Simpson - Niña inteligente y reflexiva", 
+            "Bart Simpson - Niño rebelde y astuto",
+            "Marge Simpson - Madre sabia y empática"
+        ]
+        
+        # Botón principal
+        if st.button("🎲 Generar Reflexión Filosófica", type="primary"):
+            personaje = random.choice(personajes)
+            
+            with st.spinner("🧠 Generando reflexión..."):
+                try:
+                    prompt = f"""Eres {personaje} de Los Simpsons.
+
+Genera una reflexión filosófica auténtica:
+1. Una frase memorable sobre la vida
+2. Un análisis filosófico de 80 palabras
+
+Formato:
+FRASE: [tu frase]
+ANÁLISIS: [análisis filosófico]"""
+
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role": "user", "content": prompt}],
+                        max_tokens=200,
+                        temperature=0.7
+                    )
+                    
+                    resultado = response.choices[0].message.content.strip()
+                    
+                    # Mostrar resultado
+                    st.markdown("---")
+                    st.markdown(f"### 🎭 {personaje.split(' - ')[0]}")
+                    
+                    if "FRASE:" in resultado and "ANÁLISIS:" in resultado:
+                        partes = resultado.split("ANÁLISIS:")
+                        frase = partes[0].replace("FRASE:", "").strip()
+                        analisis = partes[1].strip()
+                        
+                        st.info(f'*"{frase}"*')
+                        st.write(f"**Análisis:** {analisis}")
+                    else:
+                        st.write(resultado)
+                        
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
 def main():
     """Función principal"""
