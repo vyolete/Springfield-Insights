@@ -1,12 +1,12 @@
 # 🍩 Springfield Insights
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://springfield-insights-unir.streamlit.app/)
 
 **Explorando la filosofía y crítica social de Los Simpsons mediante inteligencia artificial**
 
 ## 🚀 Demo en Vivo
 
-**[▶️ Abrir Springfield Insights](https://your-app-name.streamlit.app)**
+**[▶️ Abrir Springfield Insights](https://springfield-insights-unir.streamlit.app/)**
 
 ## 📋 Descripción
 
