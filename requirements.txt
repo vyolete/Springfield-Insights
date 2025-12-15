@@ -1,13 +1,17 @@
-# Springfield Insights - Dependencias Core
+# Springfield Insights - Dependencias para Streamlit Cloud
+# Optimizado para deploy automático
 
 # Framework de interfaz web
 streamlit>=1.28.0
 
-# Cliente OpenAI para GPT-4
+# Cliente OpenAI para análisis IA
 openai>=1.0.0
 
-# HTTP requests para API externa
+# HTTP requests para APIs externas
 requests>=2.31.0
 
-# Gestión de variables de entorno
+# Gestión de variables de entorno (desarrollo local)
 python-dotenv>=1.0.0
+
+# Dependencias adicionales para Streamlit Cloud
+watchdog>=3.0.0

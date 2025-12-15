@@ -1,117 +1,191 @@
 # 🍩 Springfield Insights
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
+
 **Explorando la filosofía y crítica social de Los Simpsons mediante inteligencia artificial**
+
+## 🚀 Demo en Vivo
+
+**[▶️ Abrir Springfield Insights](https://your-app-name.streamlit.app)**
 
 ## 📋 Descripción
 
-Springfield Insights es una aplicación académica que utiliza GPT-4 para generar análisis filosóficos profundos de citas auténticas de Los Simpsons, demostrando la riqueza intelectual presente en la cultura popular.
+Springfield Insights es una aplicación académica que utiliza **GPT-3.5-Turbo** para generar análisis filosóficos profundos de Los Simpsons, demostrando la riqueza intelectual presente en la cultura popular. Optimizada para **Streamlit Cloud** con integración automática de GitHub.
 
-## 🚀 Ejecución Rápida
+## ✨ Características
+
+- 🤖 **Análisis con GPT-3.5-Turbo**: Interpretaciones filosóficas auténticas
+- 🎭 **Personajes Únicos**: Reflexiones fieles a Homer, Lisa, Bart y Marge
+- 🏛️ **Rigor Académico**: Enfoque en crítica social y contexto filosófico
+- ☁️ **Deploy Automático**: Integración completa con Streamlit Cloud y GitHub
+- 🎨 **Interfaz Moderna**: Diseño responsive y experiencia optimizada
+- 🔄 **CI/CD Automático**: Cada push actualiza la app automáticamente
+
+## 🛠️ Instalación Local
 
 ### Prerrequisitos
 - Python 3.9+
-- Clave API de OpenAI (GPT-4)
+- Cuenta de OpenAI con API Key
 
-### Instalación y Ejecución
+### Pasos Rápidos
 
 ```bash
 # 1. Clonar el repositorio
-git clone <repository-url>
-cd springfield_insights
+git clone https://github.com/tu-usuario/springfield-insights.git
+cd springfield-insights
 
 # 2. Instalar dependencias
 pip install -r requirements.txt
 
-# 3. Configurar variables de entorno
+# 3. Configurar API Key
 cp .env.example .env
-# Editar .env y añadir tu OPENAI_API_KEY
+# Edita .env y añade tu OPENAI_API_KEY
 
 # 4. Ejecutar aplicación
-python run.py
+streamlit run streamlit_app.py
 ```
 
-## 🎯 Características
+## ☁️ Deploy en Streamlit Cloud
 
-- ✅ **API real de Los Simpsons** conectada a https://thesimpsonsapi.com
-- ✅ **CDN optimizado** para imágenes de alta calidad y carga rápida
-- ✅ **Frases auténticas** directamente de la base de datos oficial
-- ✅ **Sistema híbrido** API + fallback local para máxima confiabilidad
-- ✅ **Análisis filosófico** generado por GPT-4
-- ✅ **Crítica social** contextualizada
-- ✅ **Interfaz optimizada** y responsive
-- ✅ **Arquitectura modular** y limpia
+### 🚀 Configuración Automática con GitHub
 
-## 🏗️ Estructura del Proyecto
+1. **Fork este repositorio** en tu cuenta de GitHub
 
+2. **Conecta con Streamlit Cloud:**
+   - Ve a [share.streamlit.io](https://share.streamlit.io)
+   - Haz clic en "New app"
+   - Conecta tu repositorio de GitHub
+   - Selecciona `streamlit_app.py` como archivo principal
+
+3. **Configura Secrets:**
+   - En tu app de Streamlit Cloud, ve a "Settings" → "Secrets"
+   - Añade tu configuración:
+   ```toml
+   OPENAI_API_KEY = "sk-proj-tu-api-key-aqui"
+   ```
+
+4. **Deploy Automático:**
+   - Cada push a `main` actualizará automáticamente tu app
+   - La URL será: `https://tu-usuario-springfield-insights-streamlit-app-xxx.streamlit.app`
+
+### 🔐 Configuración de Secrets
+
+En Streamlit Cloud Settings → Secrets:
+
+```toml
+# ✅ Requerido
+OPENAI_API_KEY = "tu-api-key-de-openai"
+
+# 🔧 Opcional (con valores por defecto)
+OPENAI_MODEL = "gpt-3.5-turbo"
+OPENAI_MAX_TOKENS = "250"
+OPENAI_TEMPERATURE = "0.8"
 ```
-springfield_insights/
-├── app.py                    # Aplicación principal
-├── run.py                    # Script de ejecución
-├── config/
-│   └── settings.py           # Configuración
-├── services/
-│   ├── quote_service.py      # Servicio de análisis IA
-│   └── simpsons_api_service.py # Conexión a API oficial
-├── ui/
-│   └── components.py         # Componentes de interfaz
-├── data/
-│   └── quotes_data.py        # Gestor híbrido API + fallback local
-├── requirements.txt          # Dependencias
-└── README.md                 # Documentación
+
+## 🎯 Uso
+
+1. **Selecciona un personaje** en la barra lateral (o deja "Aleatorio")
+2. **Haz clic en "Generar Nueva Reflexión"** 
+3. **Explora el análisis** generado por IA
+4. **Interactúa** con los botones para copiar, guardar o compartir
+
+## 🏗️ Arquitectura
+
+### Estructura Optimizada para Streamlit Cloud
 ```
+springfield-insights/
+├── streamlit_app.py      # 🎯 Aplicación principal (Streamlit Cloud)
+├── app_final.py          # 🔧 Versión simple alternativa
+├── requirements.txt      # 📦 Dependencias
+├── .env.example         # 🔐 Plantilla de configuración
+├── .streamlit/          # ⚙️ Configuración de Streamlit
+│   └── config.toml
+├── config/              # 🛠️ Configuración avanzada
+│   └── settings.py
+├── services/            # 🔄 Servicios de negocio
+├── ui/                  # 🎨 Componentes de interfaz
+├── data/                # 📊 Gestión de datos
+└── utils/               # 🔧 Utilidades
+```
+
+### 🔄 Flujo de Desarrollo
+
+#### Desarrollo Local
+```bash
+# Desarrollo con hot-reload
+streamlit run streamlit_app.py
+
+# Versión simple para testing
+streamlit run app_final.py
+```
+
+#### Deploy Automático
+1. **Commit y push** a GitHub
+2. **Streamlit Cloud detecta** cambios automáticamente
+3. **Redeploy automático** en segundos
+4. **URL actualizada** instantáneamente
 
 ## 🤖 Tecnologías
 
-- **Python 3.9+**: Lenguaje principal
-- **Streamlit**: Framework de interfaz web
-- **OpenAI GPT-4**: Análisis filosófico
-- **Arquitectura modular**: Código limpio y mantenible
+- **🐍 Python 3.9+**
+- **🚀 Streamlit**: Framework de aplicaciones web
+- **🤖 OpenAI GPT-3.5-Turbo**: Análisis de inteligencia artificial  
+- **☁️ Streamlit Cloud**: Hosting y deploy automático
+- **🔗 GitHub**: Control de versiones e integración CI/CD
+- **🔐 Streamlit Secrets**: Gestión segura de API keys
 
 ## 🎓 Valor Académico
 
-Este proyecto demuestra:
+**Springfield Insights** demuestra cómo la inteligencia artificial puede ser utilizada para:
 
-- **Análisis cultural** mediante inteligencia artificial
-- **Aplicación práctica** de LLMs en contextos académicos
-- **Arquitectura de software** robusta y escalable
-- **Interfaz educativa** intuitiva y accesible
+- 📚 **Análisis cultural** mediante procesamiento de lenguaje natural
+- 🎭 **Crítica social** a través de personajes ficticios
+- 🏛️ **Filosofía aplicada** en cultura popular contemporánea
+- ☁️ **Deploy moderno** con CI/CD automático
+
+## 🤝 Contribuir
+
+1. **Fork** el proyecto
+2. **Crea una rama** para tu feature:
+   ```bash
+   git checkout -b feature/nueva-funcionalidad
+   ```
+3. **Commit** tus cambios:
+   ```bash
+   git commit -m 'Añadir nueva funcionalidad increíble'
+   ```
+4. **Push** a la rama:
+   ```bash
+   git push origin feature/nueva-funcionalidad
+   ```
+5. **Abre un Pull Request**
 
 ## 📊 Funcionalidades
 
-1. **Exploración de Citas**: Acceso a citas auténticas con contexto
-2. **Análisis Filosófico**: Generación automática con GPT-4
-3. **Crítica Social**: Conexiones con temas contemporáneos
-4. **Interfaz Interactiva**: Navegación fluida y responsive
+### ✅ Implementadas
+- 🎭 Selección de personajes (Homer, Lisa, Bart, Marge)
+- 🤖 Generación de reflexiones con GPT-3.5-Turbo
+- 📚 Análisis filosófico contextualizado
+- 🎨 Interfaz responsive y moderna
+- ☁️ Deploy automático en Streamlit Cloud
+- 🔐 Gestión segura de secrets
 
-## 🔧 Configuración
+### 🚧 Próximas Mejoras
+- 📊 Dashboard de estadísticas
+- 💾 Sistema de favoritos persistente
+- 🔗 Compartir en redes sociales
+- 📱 Optimización móvil avanzada
 
-### Variables de Entorno (.env)
+## 📄 Licencia
 
-```env
-# Requerida
-OPENAI_API_KEY=tu-clave-api-de-openai
-
-# Opcionales
-OPENAI_MODEL=gpt-4
-OPENAI_MAX_TOKENS=400
-OPENAI_TEMPERATURE=0.7
-```
-
-## 📝 Uso
-
-1. Ejecuta `python run.py`
-2. Abre tu navegador en la URL mostrada
-3. Haz clic en "Obtener Nueva Reflexión Filosófica"
-4. Explora el análisis generado por GPT-4
-
-## 🎉 Resultado
-
-Una aplicación completamente funcional que combina:
-- Contenido auténtico de Los Simpsons
-- Análisis académico riguroso
-- Tecnología de IA avanzada
-- Experiencia de usuario optimizada
+Este proyecto está bajo la **Licencia MIT** - ver [LICENSE](LICENSE) para detalles.
 
 ---
 
-**Springfield Insights** - Demostrando que la sabiduría puede encontrarse en los lugares más inesperados. 🍩
+<div align="center">
+
+**[🚀 Probar la App](https://your-app-name.streamlit.app)** | **[📖 Documentación](https://github.com/tu-usuario/springfield-insights/wiki)** | **[🐛 Reportar Bug](https://github.com/tu-usuario/springfield-insights/issues)**
+
+Hecho con ❤️ y 🤖 para explorar la sabiduría de Springfield
+
+</div>

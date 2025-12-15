@@ -9,16 +9,22 @@ import os
 from dotenv import load_dotenv
 import random
 
-# Cargar variables de entorno
+# Cargar variables de entorno (local) o secrets (cloud)
 load_dotenv()
 
 # Configuración básica
 st.set_page_config(page_title="Springfield Insights", page_icon="🍩")
 
-# Verificar API Key
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Verificar API Key - Prioridad: secrets > .env
+try:
+    # Intentar usar Streamlit secrets primero (para cloud)
+    OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+except (KeyError, FileNotFoundError):
+    # Fallback a variables de entorno locales
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 if not OPENAI_API_KEY:
-    st.error("❌ Configura OPENAI_API_KEY en archivo .env")
+    st.error("❌ Configura OPENAI_API_KEY en Streamlit Secrets o archivo .env")
     st.stop()
 
 # Cliente OpenAI
