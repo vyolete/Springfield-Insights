@@ -15,3 +15,21 @@ python-dotenv>=1.0.0
 
 # Dependencias adicionales para Streamlit Cloud
 watchdog>=3.0.0
+
+# ===== TESTING DEPENDENCIES =====
+# Framework de testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# End-to-End testing con navegador
+playwright>=1.40.0
+
+# Mocking y fixtures
+pytest-mock>=3.12.0
+
+# Cobertura de código
+pytest-cov>=4.1.0
+
+# Utilidades para testing
+pytest-xdist>=3.3.0  # Ejecución paralela
+pytest-html>=4.1.0   # Reportes HTML
